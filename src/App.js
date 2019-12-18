@@ -1,13 +1,25 @@
 import React from 'react';
 import './App.css';
-import { Button } from 'antd-mobile'
-import 'antd-mobile/dist/antd-mobile.css';  // or 'antd-mobile/dist/antd-mobile.less'
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
+
+// 导入相关组件
+import Login from './views/login/Login'
+import Home from './views/home/Home'
+function Not() {
+  return(
+    <div>Not Found</div>
+  )
+}
 function App() {
   return (
-    <div>
-      <h1>React init</h1>
-      <Button type="primary">Click</Button>
-    </div>
+    <BrowserRouter>
+      <Switch>
+        <Route path='/login' component={Login}></Route>
+        <Route path='/home' component={Home}></Route>
+        <Redirect from='/' to='/home' exact></Redirect>
+        <Route component={Not}></Route>
+      </Switch>
+    </BrowserRouter>
   );
 }
 
