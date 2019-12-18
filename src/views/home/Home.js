@@ -1,38 +1,41 @@
 import React from 'react';
 import { TabBar } from 'antd-mobile';
-import 'antd-mobile/dist/antd-mobile.css';
+
+import Index from '../index/Index.js'
+import Info from '../info/Info.js'
+import Find from '../find/Find.js'
+import My from '../my/My.js'
+
 import './home.css'
+import '../../assets/fonts/iconfont.css'
+
+
 // 导入路由相关组件,配置主页面子路由
-// import { BrowserRouter, Route, Link } from 'react-router-dom'
+import { Route, Redirect, Switch } from 'react-router-dom'
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedTab: 'home',
-      hidden: false,
+      selectedTab: 'index',
       fullScreen: true,
     };
   }
   render() {
     return (
       <div>
-        {/* <BrowserRouter>
-          <Route path='/home' component={Index}></Route>
-          <Route path='/find' component={Find}></Route>
-          <Route path='/info' component={Info}></Route>
-          <Route path='/my' component={My}></Route>
-          <Link to='/home'>主页</Link>
-          <Link to='/find'>找房</Link>
-          <Link to='/info'>资讯</Link>
-          <Link to='/my'>我的</Link>
-        </BrowserRouter> */}
+        <Switch>
+          <Redirect from='/home' to='/home/index' exact />
+          <Route path='/home/index' component={Index} />
+          <Route path='/home/find' component={Find} />
+          <Route path='/home/info' component={Info} />
+          <Route path='/home/my' component={My} />
+        </Switch>
         <TabBar
           unselectedTintColor="#949494"
           tintColor="#33A3F4"
           barTintColor="white"
-          noRenderContent={true}
-          hidden={this.state.hidden}>
-            {this.renderMenuItem()}
+          noRenderContent={true}>
+          {this.renderMenuItem()}
         </TabBar>
       </div>
     )
@@ -40,44 +43,35 @@ class Home extends React.Component {
 
   renderMenuItem = () => {
     let mentData = [{
-      id: 'home',
-      title: '主页'
+      id: 'index',
+      title: '主页',
+      icon: 'icon-home'
     }, {
       id: 'find',
-      title: '找房'
+      title: '找房',
+      icon: 'icon-chazhaofangyuan'
     }, {
       id: 'info',
-      title: '资讯'
+      title: '资讯',
+      icon: 'icon-zixun'
     }, {
       id: 'my',
-      title: '我的'
+      title: '我的',
+      icon: 'icon-wode'
     }]
     return mentData.map(item => {
       return (
         <TabBar.Item
-          icon={
-            <div style={{
-              width: '22px',
-              height: '22px',
-              background: 'url(https://gw.alipayobjects.com/zos/rmsportal/BTSsmHkPsQSPTktcXyTV.svg) center center /  21px 21px no-repeat'
-            }}
-            />
-          }
-          selectedIcon={
-            <div style={{
-              width: '22px',
-              height: '22px',
-              background: 'url(https://gw.alipayobjects.com/zos/rmsportal/ekLecvKBnRazVLXbWOnE.svg) center center /  21px 21px no-repeat'
-            }}
-            />
-          }
           title={item.title}
           key={item.id}
+          icon={<i className={'iconfont ' + item.icon}></i>}
+          selectedIcon={<i className={'iconfont ' + item.icon}></i>}
           selected={this.state.selectedTab === item.id}
           onPress={() => {
             this.setState({
               selectedTab: item.id,
             });
+            this.props.history.push('/home/' + item.id)
           }}>
         </TabBar.Item>
       )

@@ -5,6 +5,8 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 // 导入相关组件
 import Login from './views/login/Login'
 import Home from './views/home/Home'
+
+import 'antd-mobile/dist/antd-mobile.css';
 function Not() {
   return(
     <div>Not Found</div>
