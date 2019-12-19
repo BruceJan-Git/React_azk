@@ -2,7 +2,7 @@
  * 主页界面
  */
 import React from 'react';
-import { Carousel, Flex, WhiteSpace, Grid, WingBlank } from 'antd-mobile';
+import { Carousel, Flex, WhiteSpace, Grid, WingBlank, NavBar, Icon } from 'antd-mobile';
 import axios from 'axios'
 
 import nav1 from '../../assets/images/nav-1.png'
@@ -25,6 +25,16 @@ class Index extends React.Component {
   render() {
     return (
       <div>
+        {/* 顶部nav */}
+        <NavBar
+          mode="dark"
+          icon={<Icon type="left" />}
+          onLeftClick={() => console.log('onLeftClick')}
+          rightContent={[
+            <Icon key="0" type="search" style={{ marginRight: '16px' }} />,
+          ]}>
+            北京
+        </NavBar>
         {/* 轮播图 */}
         <Carousel
           autoplay={false}
