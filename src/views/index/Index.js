@@ -2,7 +2,7 @@
  * 主页界面
  */
 import React from 'react';
-import { Carousel, Flex, WhiteSpace, Grid } from 'antd-mobile';
+import { Carousel, Flex, WhiteSpace, Grid, WingBlank } from 'antd-mobile';
 import axios from 'axios'
 
 import nav1 from '../../assets/images/nav-1.png'
@@ -17,6 +17,7 @@ class Index extends React.Component {
     this.state = {
       imgSw: [],
       groups: [],
+      news: [],
       imgHeight: 212
     }
   }
@@ -48,6 +49,11 @@ class Index extends React.Component {
             hasLine={false}
             renderItem={this.renderGridItem} />
         </div>
+        {/* 最新咨询 */}
+        <div className='news'>
+          <h3 className='group-title'>最新资讯</h3>
+          <WingBlank>{this.renderNews()}</WingBlank>
+        </div>
       </div>
     )
   }
@@ -55,6 +61,7 @@ class Index extends React.Component {
   componentDidMount() {
     this.loadSwiper()
     this.loadGroud()
+    this.loadNews()
   }
   // 加载轮播图
   loadSwiper = async () => {
@@ -70,26 +77,21 @@ class Index extends React.Component {
       groups: res.body
     })
   }
-  // 渲染租房小组
-  renderGridItem = (item) => {
-    return (
-      <Flex justify='between' className='gird-item'>
-        <div className='desc'>
-          <h3>{item.title}</h3>
-          <p>{item.desc}</p>
-        </div>
-        <img src={`${axios.defaults.baseURL}${item.imgSrc}`} alt="" />
-      </Flex>
-    )
+  // 加载最新资讯
+  loadNews = async () => {
+    let res = await axios.get('/home/news')
+    this.setState({
+      news: res.body
+    })
   }
-  // 动态渲染轮播图
+  // 渲染轮播图
   renderSwiper = () => {
     return this.state.imgSw.map(item => {
       return (
         <a
           key={item.id}
           href="http://baidu.com"
-          style={{height: this.state.imgHeight }}>
+          style={{ height: this.state.imgHeight }}>
           <img
             src={`${axios.defaults.baseURL}${item.imgSrc}`}
             alt=""
@@ -105,7 +107,7 @@ class Index extends React.Component {
       )
     })
   }
-  // 动态渲染菜单栏
+  // 渲染菜单栏
   renderMenu = () => {
     let mentData = [{
       id: 1,
@@ -130,6 +132,41 @@ class Index extends React.Component {
           <img src={item.imgSrc} alt="" />
           <p>{item.mname}</p>
         </Flex.Item>
+      )
+    })
+  }
+  // 渲染租房小组
+  renderGridItem = (item) => {
+    return (
+      <Flex justify='between' className='gird-item'>
+        <div className='desc'>
+          <h3>{item.title}</h3>
+          <p>{item.desc}</p>
+        </div>
+        <img src={`${axios.defaults.baseURL}${item.imgSrc}`} alt="" />
+      </Flex>
+    )
+  }
+  // 渲染最新资讯模板
+  renderNews = () => {
+    return this.state.news.map(item => {
+      return (
+        <div className="news-item" key={item.id}>
+          <div className="imgwrap">
+            <img
+              className="img"
+              src={`${axios.defaults.baseURL}${item.imgSrc}`}
+              alt=""
+            />
+          </div>
+          <Flex className="content" direction="column" justify="between">
+            <h3 className="title">{item.title}</h3>
+            <Flex className="info" justify="between">
+              <span>{item.from}</span>
+              <span>{item.date}</span>
+            </Flex>
+          </Flex>
+        </div>
       )
     })
   }
