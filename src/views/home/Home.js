@@ -6,7 +6,7 @@ import Info from '../info/Info.js'
 import Find from '../find/Find.js'
 import My from '../my/My.js'
 
-import './home.css'
+import './home.scss'
 import '../../assets/fonts/iconfont.css'
 
 

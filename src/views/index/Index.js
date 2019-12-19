@@ -10,7 +10,7 @@ import nav2 from '../../assets/images/nav-2.png'
 import nav3 from '../../assets/images/nav-3.png'
 import nav4 from '../../assets/images/nav-4.png'
 
-import './idnex.css'
+import './idnex.scss'
 class Index extends React.Component {
   constructor(props) {
     super(props);
@@ -32,25 +32,21 @@ class Index extends React.Component {
         <WhiteSpace size='sm' />
         {/* 菜单 */}
         <Flex>
-          <Flex.Item>
-            <img src={nav1} alt="" />
-            <p>整租</p>
-          </Flex.Item>
-          <Flex.Item>
-            <img src={nav2} alt="" />
-            <p>合租</p>
-          </Flex.Item>
-          <Flex.Item>
-            <img src={nav3} alt="" />
-            <p>地图找房</p>
-          </Flex.Item>
-          <Flex.Item>
-            <img src={nav4} alt="" />
-            <p>去出租</p>
-          </Flex.Item>
+          {this.renderMenu()}
         </Flex>
       </div>
     )
+  }
+  // 组件挂载
+  componentDidMount() {
+    this.loadSwiper()
+  }
+  // 加载轮播图
+  loadSwiper = async () => {
+    let res = await axios.get('/home/swiper')
+    this.setState({
+      imgSw: res.body
+    })
   }
   // 动态渲染轮播图
   renderSwiper = () => {
@@ -75,15 +71,32 @@ class Index extends React.Component {
       )
     })
   }
-  // 组件挂载
-  componentDidMount() {
-    this.loadSwiper()
-  }
-  // 加载轮播图
-  loadSwiper = async () => {
-    let res = await axios.get('/home/swiper')
-    this.setState({
-      imgSw: res.body
+  // 动态渲染菜单栏
+  renderMenu = () => {
+    let mentData = [{
+      id: 1,
+      mname: '整租',
+      imgSrc: nav1
+    }, {
+      id: 2,
+      mname: '合租',
+      imgSrc: nav2
+    }, {
+      id: 3,
+      mname: '地图找房',
+      imgSrc: nav3
+    }, {
+      id: 4,
+      mname: '去出租',
+      imgSrc: nav4
+    }]
+    return mentData.map(item => {
+      return (
+        <Flex.Item key={item.id}>
+          <img src={item.imgSrc} alt="" />
+          <p>{item.mname}</p>
+        </Flex.Item>
+      )
     })
   }
 }
