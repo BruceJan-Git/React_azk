@@ -2,7 +2,7 @@
  * 主页界面
  */
 import React from 'react';
-import { Carousel, Flex, WhiteSpace } from 'antd-mobile';
+import { Carousel, Flex, WhiteSpace, Grid } from 'antd-mobile';
 import axios from 'axios'
 
 import nav1 from '../../assets/images/nav-1.png'
@@ -16,6 +16,7 @@ class Index extends React.Component {
     super(props);
     this.state = {
       imgSw: [],
+      groups: [],
       imgHeight: 212
     }
   }
@@ -31,15 +32,29 @@ class Index extends React.Component {
         </Carousel>
         <WhiteSpace size='sm' />
         {/* 菜单 */}
-        <Flex>
+        <Flex className='menu'>
           {this.renderMenu()}
         </Flex>
+        {/* 租房小组 */}
+        <div className='group'>
+          <Flex justify='between' className='group-title'>
+            <h3>租房小组</h3>
+            <span>更多...</span>
+          </Flex>
+          <Grid
+            data={this.state.groups}
+            columnNum={2}
+            square={false}
+            hasLine={false}
+            renderItem={this.renderGridItem} />
+        </div>
       </div>
     )
   }
   // 组件挂载
   componentDidMount() {
     this.loadSwiper()
+    this.loadGroud()
   }
   // 加载轮播图
   loadSwiper = async () => {
@@ -48,6 +63,25 @@ class Index extends React.Component {
       imgSw: res.body
     })
   }
+  // 加载租房小组数据
+  loadGroud = async () => {
+    let res = await axios.get('/home/groups')
+    this.setState({
+      groups: res.body
+    })
+  }
+  // 渲染租房小组
+  renderGridItem = (item) => {
+    return (
+      <Flex justify='between' className='gird-item'>
+        <div className='desc'>
+          <h3>{item.title}</h3>
+          <p>{item.desc}</p>
+        </div>
+        <img src={`${axios.defaults.baseURL}${item.imgSrc}`} alt="" />
+      </Flex>
+    )
+  }
   // 动态渲染轮播图
   renderSwiper = () => {
     return this.state.imgSw.map(item => {
@@ -55,7 +89,7 @@ class Index extends React.Component {
         <a
           key={item.id}
           href="http://baidu.com"
-          style={{ display: 'inline-block', width: '100%', height: this.state.imgHeight }}>
+          style={{height: this.state.imgHeight }}>
           <img
             src={`${axios.defaults.baseURL}${item.imgSrc}`}
             alt=""
