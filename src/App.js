@@ -1,12 +1,15 @@
 import React from 'react';
 import './App.css';
+import 'antd-mobile/dist/antd-mobile.css';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 
-// 导入相关组件
+// 导入相关组件(主页和登陆)
 import Login from './views/login/Login'
 import Home from './views/home/Home'
+import '../src/utils/api' // 基准路径/响应拦截
 
-import 'antd-mobile/dist/antd-mobile.css';
+
+
 function Not() {
   return(
     <div>Not Found</div>
