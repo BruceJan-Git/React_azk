@@ -29,7 +29,9 @@ class Index extends React.Component {
         <NavBar
           mode="dark"
           icon={<Icon type="left" />}
-          onLeftClick={() => console.log('onLeftClick')}
+          onLeftClick={() => {
+            this.props.history.push('/city')
+          }}
           rightContent={[
             <Icon key="0" type="search" style={{ marginRight: '16px' }} />,
           ]}>
@@ -70,7 +72,7 @@ class Index extends React.Component {
   // 组件挂载
   componentDidMount() {
     this.loadSwiper()
-    this.loadGroud()
+    this.loadGroup()
     this.loadNews()
   }
   // 加载轮播图
@@ -81,7 +83,7 @@ class Index extends React.Component {
     })
   }
   // 加载租房小组数据
-  loadGroud = async () => {
+  loadGroup = async () => {
     let res = await axios.get('/home/groups')
     this.setState({
       groups: res.body
