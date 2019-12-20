@@ -1,7 +1,12 @@
 import React from 'react';
 import { NavBar, Icon } from 'antd-mobile'
 import axios from 'axios';
+import 'react-virtualized/styles.css'
+import { List } from 'react-virtualized'
 
+const list = Array.from(new Array(50)).map(
+  (item, index) => `第${index}行数据`
+)
 class City extends React.Component {
 
   constructor(props) {
@@ -25,7 +30,14 @@ class City extends React.Component {
           北京
         </NavBar>
         <div>
-          {this.renderCityList()}
+          {/* {this.renderCityList()} */}
+          <List
+            width={300}
+            height={300}
+            rowCount={list.length}
+            rowHeight={20}
+            rowRenderer={this.rowRenderer}
+          />
         </div>
       </div>
     )
@@ -108,6 +120,18 @@ class City extends React.Component {
     return (
       <ul>{arr}</ul>
     )
+  }
+
+  rowRenderer = ({
+    key,
+    style,
+    index
+  }) => {
+    return (
+      <div key={key} style={style}>
+        {list[index]}
+      </div>
+    );
   }
 }
 
