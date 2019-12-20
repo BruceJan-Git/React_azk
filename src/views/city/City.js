@@ -2,13 +2,13 @@ import React from 'react';
 import { NavBar, Icon } from 'antd-mobile'
 import axios from 'axios';
 import 'react-virtualized/styles.css'
-import { List } from 'react-virtualized'
+import { List, AutoSizer } from 'react-virtualized'
+import './city.scss'
 
 const list = Array.from(new Array(50)).map(
   (item, index) => `第${index}行数据`
 )
 class City extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -17,7 +17,7 @@ class City extends React.Component {
   }
   render() {
     return (
-      <div>
+      <div className='cityList'>
         <NavBar
           mode="light"
           icon={<Icon type="left" />}
@@ -29,16 +29,17 @@ class City extends React.Component {
           ]}>
           北京
         </NavBar>
-        <div>
-          {/* {this.renderCityList()} */}
-          <List
-            width={300}
-            height={300}
-            rowCount={list.length}
-            rowHeight={20}
-            rowRenderer={this.rowRenderer}
-          />
-        </div>
+        {/* {this.renderCityList()} */}
+        <AutoSizer>
+          {({ height, width }) => {
+            return <List
+              width={width}
+              height={height}
+              rowCount={list.length}
+              rowHeight={this.calcRowHeight}
+              rowRenderer={this.rowRenderer} />
+          }}
+        </AutoSizer>
       </div>
     )
   }
@@ -121,18 +122,23 @@ class City extends React.Component {
       <ul>{arr}</ul>
     )
   }
-
+  // 渲染列表
   rowRenderer = ({
     key,
     style,
     index
   }) => {
     return (
-      <div key={key} style={style}>
-        {list[index]}
+      <div key={key} style={style} className='city'>
+        <div className="title">A</div>
+        <div className="name">安庆</div>
       </div>
     );
   }
+  calcRowHeight = () => {
+    return 300
+  }
+
 }
 
 export default City
