@@ -13,6 +13,7 @@ class City extends React.Component {
       cityList: null,
       currentIndex: 0
     }
+    this.listRef = React.createRef()
   }
   render() {
     return (
@@ -38,6 +39,9 @@ class City extends React.Component {
                 <List
                   width={width}
                   height={height}
+                  scrollToAlignment='start'
+                  ref={this.listRef}
+                  onRowsRendered={this.onRowsRendered}
                   // 对象的长度=key.length
                   rowCount={this.state.cityList.cityIndex.length}
                   rowHeight={this.calcRowHeight}
@@ -158,12 +162,30 @@ class City extends React.Component {
       let rightIndex = cityList.cityIndex
       // console.log(rightIndex)
       return rightIndex.map((item, index) => (
-        <li key={index} className="city-index-item">
+        <li
+          key={index}
+          // 点击索引滚动到对应的位置
+          onClick={() => {
+            let list = this.listRef.current
+            list.scrollToRow (index)
+          }}
+          className="city-index-item">
           <span className={currentIndex === index ? 'index-active' : ''}>
             {item === 'hot' ? '热' : item.toUpperCase()}
           </span>
         </li>
       ))
+    }
+  }
+  /**
+   * 滚动渲染右侧索引
+   */
+  onRowsRendered = ({ startIndex }) => {
+    let { currentIndex } = this.state
+    if (currentIndex !== startIndex) {
+      this.setState({
+        currentIndex: startIndex
+      })
     }
   }
 }
