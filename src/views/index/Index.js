@@ -76,6 +76,16 @@ class Index extends React.Component {
     this.loadSwiper()
     this.loadGroup()
     this.loadNews()
+    var myCity = new window.BMap.LocalCity();
+    myCity.get(async (res) => {
+      let currentCity = await axios.get('area/info', {
+        params: {
+          name: res.name
+        }
+      })
+      console.log(currentCity)
+      window.localStorage.setItem('currentCity', JSON.stringify(currentCity.body))
+    });
     let city = localStorage.getItem('currentCity')
     city = JSON.parse(city)
     // console.log(city.label)
