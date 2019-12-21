@@ -5,14 +5,11 @@ import 'react-virtualized/styles.css'
 import { List, AutoSizer } from 'react-virtualized'
 import './city.scss'
 
-const list = Array.from(new Array(50)).map(
-  (item, index) => `第${index}行数据`
-)
 class City extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      cityList: []
+      cityList: null
     }
   }
   render() {
@@ -32,12 +29,17 @@ class City extends React.Component {
         {/* {this.renderCityList()} */}
         <AutoSizer>
           {({ height, width }) => {
-            return <List
-              width={width}
-              height={height}
-              rowCount={list.length}
-              rowHeight={this.calcRowHeight}
-              rowRenderer={this.rowRenderer} />
+            if (this.state.cityList) {
+              return (
+                <List
+                  width={width}
+                  height={height}
+                  // 对象的长度=key.length
+                  rowCount={this.state.cityList.cityIndex.length}
+                  rowHeight={this.calcRowHeight}
+                  rowRenderer={this.rowRenderer} />
+              )
+            }
           }}
         </AutoSizer>
       </div>
@@ -128,15 +130,24 @@ class City extends React.Component {
     style,
     index
   }) => {
+    let { objCityList, cityIndex} = this.state.cityList
+    let letter = cityIndex[index]
+    let Clist = objCityList[letter]
     return (
       <div key={key} style={style} className='city'>
-        <div className="title">A</div>
-        <div className="name">安庆</div>
+        <div className="title">{letter}</div>
+        {Clist && Clist.map(item => (
+          <div className="name" key={item.value}>{item.label}</div>
+        ))}
       </div>
     );
   }
-  calcRowHeight = () => {
-    return 300
+  calcRowHeight = ({ index }) => {
+    let { objCityList, cityIndex } = this.state.cityList
+    let letter = cityIndex[index]
+    let Clist = objCityList[letter]
+    let h = 36 + 50 * Clist.length
+    return h
   }
 
 }
