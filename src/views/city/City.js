@@ -4,6 +4,7 @@ import axios from 'axios';
 import 'react-virtualized/styles.css'
 import { List, AutoSizer } from 'react-virtualized'
 import './city.scss'
+import { currentCity } from '../../utils/api'
 
 class City extends React.Component {
   constructor(props) {
@@ -15,6 +16,7 @@ class City extends React.Component {
   render() {
     return (
       <div className='cityList'>
+        {/* 顶部导航栏布局 */}
         <NavBar
           mode="light"
           icon={<Icon type="left" />}
@@ -27,6 +29,7 @@ class City extends React.Component {
           北京
         </NavBar>
         {/* {this.renderCityList()} */}
+        {/* 城市列表布局 */}
         <AutoSizer>
           {({ height, width }) => {
             if (this.state.cityList) {
@@ -42,6 +45,10 @@ class City extends React.Component {
             }
           }}
         </AutoSizer>
+        {/* 右侧索引布局 */}
+        <ul className='city-index'>
+          {this.renderIndex()}
+        </ul>
       </div>
     )
   }
@@ -63,19 +70,15 @@ class City extends React.Component {
     C_list.cityIndex.unshift('hot')
     C_list.objCityList['hot'] = hotCity.body
     // 获取当前城市
-    let currentCity = await axios.get('area/info', {
-      params: {
-        name: '北京'
-      }
-    })
+    let city = await currentCity()
     C_list.cityIndex.unshift('#')
-    C_list.objCityList['#'] = [currentCity.body]
+    C_list.objCityList['#'] = [city]
     this.setState({
       cityList: C_list
     })
     Toast.hide()
   }
-  // 定义排序城市列表数据的处理函数
+  // 定义城市列表数据处理函数
   dataFormat = (data) => {
     let objCityList = {}
     let cityIndex = []
@@ -102,31 +105,41 @@ class City extends React.Component {
       cityIndex
     }
   }
-  // 渲染城市列表
-  renderCityList = () => {
-    let obj = this.state.cityList.objCityList
-    let indexs = this.state.cityList.cityIndex
-    let arr = []
-    if (obj) {
-      indexs.forEach(letter => {
-        arr.push(<li key={letter}>{letter}</li>)
-        let citys = obj[letter]
-        citys.forEach(city => {
-          if (letter === 'hot') {
-            arr.push(<li key={city.short}>{city.label}</li>)
-          } else if (letter === '#') {
-            arr.push(<li key={city.value + '#'}>{city.label}</li>)
-          } else {
-            arr.push(<li key={city.value}>{city.label}</li>)
-          }
-        })
-      })
-    }
-    return (
-      <ul>{arr}</ul>
-    )
+  // 定义计算列表行高
+  calcRowHeight = ({ index }) => {
+    let { objCityList, cityIndex } = this.state.cityList
+    let letter = cityIndex[index]
+    let Clist = objCityList[letter]
+    let h = 36 + 50 * Clist.length
+    return h
   }
-  // 渲染列表
+  // 渲染城市列表
+  // renderCityList = () => {
+  //   let obj = this.state.cityList.objCityList
+  //   let indexs = this.state.cityList.cityIndex
+  //   let arr = []
+  //   if (obj) {
+  //     indexs.forEach(letter => {
+  //       arr.push(<li key={letter}>{letter}</li>)
+  //       let citys = obj[letter]
+  //       citys.forEach(city => {
+  //         if (letter === 'hot') {
+  //           arr.push(<li key={city.short}>{city.label}</li>)
+  //         } else if (letter === '#') {
+  //           arr.push(<li key={city.value + '#'}>{city.label}</li>)
+  //         } else {
+  //           arr.push(<li key={city.value}>{city.label}</li>)
+  //         }
+  //       })
+  //     })
+  //   }
+  //   return (
+  //     <ul>{arr}</ul>
+  //   )
+  // }
+  /**
+   * 渲染城市列表
+   */
   rowRenderer = ({
     key,
     style,
@@ -159,14 +172,21 @@ class City extends React.Component {
       </div>
     );
   }
-  calcRowHeight = ({ index }) => {
-    let { objCityList, cityIndex } = this.state.cityList
-    let letter = cityIndex[index]
-    let Clist = objCityList[letter]
-    let h = 36 + 50 * Clist.length
-    return h
+  /**
+   * 渲染右侧索引
+   */
+  renderIndex = () => {
+    let { cityList } = this.state
+    if (cityList) {
+      let rightIndex = cityList.cityIndex
+      // console.log(rightIndex)
+      return rightIndex.map((item, index) => (
+        <li key={index} className="city-index-item">
+          <span>{item}</span>
+        </li>
+      ))
+    }
   }
-
 }
 
 export default City
