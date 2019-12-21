@@ -10,6 +10,7 @@ import nav2 from '../../assets/images/nav-2.png'
 import nav3 from '../../assets/images/nav-3.png'
 import nav4 from '../../assets/images/nav-4.png'
 
+import { currentCity } from '../../utils/api'
 import './idnex.scss'
 class Index extends React.Component {
   constructor(props) {
@@ -19,7 +20,7 @@ class Index extends React.Component {
       groups: [],
       news: [],
       imgHeight: 212,
-      currentCity: '北京'
+      currentCity: ''
     }
   }
 
@@ -76,21 +77,10 @@ class Index extends React.Component {
     this.loadSwiper()
     this.loadGroup()
     this.loadNews()
-    var myCity = new window.BMap.LocalCity();
-    myCity.get(async (res) => {
-      let currentCity = await axios.get('area/info', {
-        params: {
-          name: res.name
-        }
+    currentCity().then(res => {
+      this.setState({
+        currentCity: res.label
       })
-      console.log(currentCity)
-      window.localStorage.setItem('currentCity', JSON.stringify(currentCity.body))
-    });
-    let city = localStorage.getItem('currentCity')
-    city = JSON.parse(city)
-    // console.log(city.label)
-    this.setState({
-      currentCity: city.label
     })
   }
   // 加载轮播图
@@ -121,7 +111,7 @@ class Index extends React.Component {
         <a
           key={item.id}
           href="http://baidu.com"
-          style={{ height: this.state.imgHeight }}>
+          style={{ display: 'inline-block', width: '100%', height: this.state.imgHeight }}>
           <img
             src={`${axios.defaults.baseURL}${item.imgSrc}`}
             alt=""
