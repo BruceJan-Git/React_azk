@@ -18,7 +18,8 @@ class Index extends React.Component {
       imgSw: [],
       groups: [],
       news: [],
-      imgHeight: 212
+      imgHeight: 212,
+      currentCity: '北京'
     }
   }
 
@@ -29,13 +30,14 @@ class Index extends React.Component {
         <NavBar
           mode="dark"
           icon={<Icon type="left" />}
+          leftContent={this.state.currentCity}
           onLeftClick={() => {
             this.props.history.push('/city')
           }}
           rightContent={[
             <Icon key="0" type="search" style={{ marginRight: '16px' }} />,
           ]}>
-            北京
+          首页
         </NavBar>
         {/* 轮播图 */}
         <Carousel
@@ -74,6 +76,12 @@ class Index extends React.Component {
     this.loadSwiper()
     this.loadGroup()
     this.loadNews()
+    let city = localStorage.getItem('currentCity')
+    city = JSON.parse(city)
+    // console.log(city.label)
+    this.setState({
+      currentCity: city.label
+    })
   }
   // 加载轮播图
   loadSwiper = async () => {

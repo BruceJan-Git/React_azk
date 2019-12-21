@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavBar, Icon } from 'antd-mobile'
+import { NavBar, Icon, Toast } from 'antd-mobile'
 import axios from 'axios';
 import 'react-virtualized/styles.css'
 import { List, AutoSizer } from 'react-virtualized'
@@ -50,6 +50,7 @@ class City extends React.Component {
   }
   // 获取城市列表数据
   loadCityList = async () => {
+    Toast.loading('加载中...', 0);
     let res = await axios.get('area/city', {
       params: {
         level: 1
@@ -72,6 +73,7 @@ class City extends React.Component {
     this.setState({
       cityList: C_list
     })
+    Toast.hide()
   }
   // 定义排序城市列表数据的处理函数
   dataFormat = (data) => {
@@ -130,14 +132,29 @@ class City extends React.Component {
     style,
     index
   }) => {
-    let { objCityList, cityIndex} = this.state.cityList
+    let { objCityList, cityIndex } = this.state.cityList
     let letter = cityIndex[index]
     let Clist = objCityList[letter]
     return (
       <div key={key} style={style} className='city'>
         <div className="title">{letter}</div>
         {Clist && Clist.map(item => (
-          <div className="name" key={item.value}>{item.label}</div>
+          <div
+            className="name"
+            onClick={() => {
+              if (['北京', '广州', '上海', '深圳'].includes(item.label)) {
+                window.localStorage.setItem('currentCity', JSON.stringify({
+                  label: item.label,
+                  value: item.value
+                }))
+                this.props.history.go(-1)
+              } else {
+                Toast.info('暂无数据', 1)
+              }
+            }}
+            key={item.value}>
+            {item.label}
+          </div>
         ))}
       </div>
     );
