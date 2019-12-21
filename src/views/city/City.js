@@ -10,7 +10,8 @@ class City extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      cityList: null
+      cityList: null,
+      currentIndex: 0
     }
   }
   render() {
@@ -113,30 +114,6 @@ class City extends React.Component {
     let h = 36 + 50 * Clist.length
     return h
   }
-  // 渲染城市列表
-  // renderCityList = () => {
-  //   let obj = this.state.cityList.objCityList
-  //   let indexs = this.state.cityList.cityIndex
-  //   let arr = []
-  //   if (obj) {
-  //     indexs.forEach(letter => {
-  //       arr.push(<li key={letter}>{letter}</li>)
-  //       let citys = obj[letter]
-  //       citys.forEach(city => {
-  //         if (letter === 'hot') {
-  //           arr.push(<li key={city.short}>{city.label}</li>)
-  //         } else if (letter === '#') {
-  //           arr.push(<li key={city.value + '#'}>{city.label}</li>)
-  //         } else {
-  //           arr.push(<li key={city.value}>{city.label}</li>)
-  //         }
-  //       })
-  //     })
-  //   }
-  //   return (
-  //     <ul>{arr}</ul>
-  //   )
-  // }
   /**
    * 渲染城市列表
    */
@@ -176,13 +153,15 @@ class City extends React.Component {
    * 渲染右侧索引
    */
   renderIndex = () => {
-    let { cityList } = this.state
+    let { cityList, currentIndex } = this.state
     if (cityList) {
       let rightIndex = cityList.cityIndex
       // console.log(rightIndex)
       return rightIndex.map((item, index) => (
         <li key={index} className="city-index-item">
-          <span>{item}</span>
+          <span className={currentIndex === index ? 'index-active' : ''}>
+            {item === 'hot' ? '热' : item.toUpperCase()}
+          </span>
         </li>
       ))
     }
