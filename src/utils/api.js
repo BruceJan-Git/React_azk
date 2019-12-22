@@ -27,3 +27,9 @@ export const currentCity = () => {
     }
   })
 }
+// 定义发布订阅模式处理非父子组件之间的传值
+const EventEmitter = require('events');
+
+class MyEmitter extends EventEmitter {}
+
+export const myEmitter = new MyEmitter();

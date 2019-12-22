@@ -1,5 +1,5 @@
 .header {
-  position: absolute;
+  // position: absolute;
   top: 0;
   width: 100%;
   height: 45px;
@@ -60,6 +60,7 @@
       }
 
       .text {
+        border: none;
         padding-left: 4px;
         font-size: 13px;
         color: #9c9fa1;

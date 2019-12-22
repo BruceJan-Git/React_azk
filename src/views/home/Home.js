@@ -1,5 +1,6 @@
 import React from 'react';
 import { TabBar } from 'antd-mobile';
+import { myEmitter } from '../../utils/api'
 
 import Index from '../index/Index.js'
 import Info from '../info/Info.js'
@@ -18,6 +19,12 @@ class Home extends React.Component {
       selectedTab: 'index',
       fullScreen: true,
     };
+    myEmitter.on('event',() => {
+      // console.log('emmit')
+      this.setState({
+        selectedTab: 'index'
+      })
+    })
   }
   render() {
     return (
