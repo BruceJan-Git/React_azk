@@ -7,7 +7,6 @@ import Find from '../find/Find.js'
 import My from '../my/My.js'
 
 import './home.scss'
-import '../../assets/fonts/iconfont.css'
 
 
 // 导入路由相关组件,配置主页面子路由
