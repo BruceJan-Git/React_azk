@@ -21,7 +21,12 @@ export default function FilterTitle(props) {
     return (
       <Flex.Item key={item.type}>
         {/* <span className={}> */}
-        <span className={state ? selectClass : ''}>
+        <span
+          // 接受父组件传递过来的函数,调用并传参
+          onClick={() => {
+            props.changeSelect(item.type)
+          }}
+          className={state ? selectClass : ''}>
           <span>{item.title}</span>
           {/* <i className="iconfont icon-arrow" /> */}
           <Icon type='down' style={{

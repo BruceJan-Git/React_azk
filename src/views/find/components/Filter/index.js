@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 
 import FilterTitle from '../FilterTitle'
-import FilterPicker from '../FilterPicker'
-import FilterMore from '../FilterMore'
+// import FilterPicker from '../FilterPicker'
+// import FilterMore from '../FilterMore'
 
 // css模块化导入方式 不再是import ''
 import styles from './index.module.css'
@@ -28,8 +28,9 @@ export default class Filter extends Component {
 
         <div className={styles.content}>
           {/* 标题栏 */}
-          <FilterTitle menuState={this.state.menuState} />
-
+          <FilterTitle
+            changeSelect={this.changeSelect}
+            menuState={this.state.menuState} />
           {/* 前三个菜单对应的内容： */}
           {/* <FilterPicker /> */}
 
@@ -38,5 +39,12 @@ export default class Filter extends Component {
         </div>
       </div>
     )
+  }
+  changeSelect = (props) => {
+    let menuState = {...this.state.menuState}
+    menuState[props] = !menuState[props]
+    this.setState({
+      menuState: menuState
+    })
   }
 }
