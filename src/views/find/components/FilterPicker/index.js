@@ -8,7 +8,7 @@ export default class FilterPicker extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: ''
+      value: props.defaultData
     }
   }
   render() {
@@ -27,6 +27,18 @@ export default class FilterPicker extends Component {
         <FilterFooter onCancel={onCancel} onSave={() => { onSave(this.state.value, type) }} />
       </>
     )
+  }
+  componentDidUpdate (prevProps,prevState) {
+    /**
+     * 1.  可以直接调用setState(),但是必须加上判断条件,否则导致死循环
+     * 2. 组件更新有两个状态,prevProps和prevState是变化之前的状态值
+     */
+    if (prevProps.defaultData !== this.props.defaultData) {
+      this.setState({
+        value: this.props.defaultData
+      })
+    }
+
   }
   onChange = (value) => {
     this.setState({

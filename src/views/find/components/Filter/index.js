@@ -31,9 +31,11 @@ export default class Filter extends Component {
   }
 
   render() {
-    let { openType, filtersData: { area, price, subway, rentType } } = this.state
+    let { openType, menuValue, filtersData: { area, price, subway, rentType } } = this.state
+    // 弹窗组件的默认值
     let data = null
     let cols = 1
+    let defaultData = menuValue[openType]
     switch (openType) {
       case 'area':
         data = [area, subway]
@@ -64,6 +66,9 @@ export default class Filter extends Component {
           {/* 前三个菜单对应的内容： */}
           {(openType === 'mode' || openType === 'area' || openType === 'price') &&
             <FilterPicker
+              // 加上key属性,当组件状态更行的时候,作为唯一标识,这样就会在组件切换状态的时候保存原始值
+              // key={openType}
+              defaultData={defaultData}
               type={openType}
               onCancel={this.handlerCancle}
               onSave={this.onSave}
@@ -114,9 +119,9 @@ export default class Filter extends Component {
     this.setState({
       menuValue: {
         ...this.state.menuValue,
-        [type]: value
+        [type]: value,
       }
-    }, () => { console.log(this.state.menuValue) })
+    }, () => { this.handlerCancle() })
   }
 
 }
