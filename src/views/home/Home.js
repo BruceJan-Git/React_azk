@@ -19,12 +19,12 @@ class Home extends React.Component {
       selectedTab: 'index',
       fullScreen: true,
     };
-    myEmitter.on('event',() => {
-      // console.log('emmit')
+    this.changeMenu = () => {
       this.setState({
         selectedTab: 'index'
       })
-    })
+    }
+    myEmitter.on('event', this.changeMenu)
   }
   render() {
     return (
@@ -47,6 +47,11 @@ class Home extends React.Component {
     )
   }
 
+  // 清理不再使用的资源
+  componentWillMount () {
+    myEmitter.off('event', this.changeMenu)
+  }
+  // 渲染tabBar
   renderMenuItem = () => {
     let mentData = [{
       id: 'index',
