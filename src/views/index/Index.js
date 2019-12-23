@@ -85,7 +85,10 @@ class Index extends React.Component {
     // 存在未取消的订阅模式
     // Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
     // in Home (created by Context.Consumer)
-    // myEmitter.emit('event');
+  }
+  componentWillUnmount() {
+    myEmitter.emit('event');
+
   }
   // 加载轮播图
   loadSwiper = async () => {

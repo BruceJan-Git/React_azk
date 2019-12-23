@@ -13,11 +13,16 @@ class Find extends React.Component {
   }
 
   render() {
+    let styles = {
+      search: {
+        fontSize: '24px',
+        verticalAlign: 'middle'
+      }
+    }
     return (
       <div>
         <Flex className='header'>
-          {/* <i className="iconfont icon-back" /> */}
-          <span onClick={() => {this.props.history.push('index/')}}>click</span>
+          <i className="iconfont icon-zuojiantou" style={{ fontSize: '24px' }} onClick={() => { this.props.history.push('index/') }} />
           <Flex className='search-box searchHeader'>
             {/* 左侧白色区域 */}
             <Flex className="search">
@@ -29,12 +34,12 @@ class Find extends React.Component {
 
               {/* 搜索表单 */}
               <div className="form" >
-                <i className="iconfont icon-seach" />
+                <i className="iconfont icon-tubiao-" style={styles.search}/>
                 <input className="text" placeholder='请输入小区或地址'></input>
               </div>
             </Flex>
             {/* 右侧地图图标 */}
-            {/* <i className="iconfont icon-map" /> */}
+            <i className="iconfont icon-ditu" style={{fontSize:'30px'}} />
           </Flex>
         </Flex>
         {/* 条件筛选找房 */}

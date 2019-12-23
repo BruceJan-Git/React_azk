@@ -28,7 +28,7 @@ class City extends React.Component {
           rightContent={[
             <Icon key="0" type="search" style={{ marginRight: '16px' }} />,
           ]}>
-          北京
+          城市列表
         </NavBar>
         {/* {this.renderCityList()} */}
         {/* 城市列表布局 */}
@@ -131,13 +131,13 @@ class City extends React.Component {
     let Clist = objCityList[letter]
     return (
       <div key={key} style={style} className='city'>
-        <div className="title">{letter}</div>
+        <div className="title">{letter === 'hot' ? 'Hot' : letter.toUpperCase()}</div>
         {Clist && Clist.map(item => (
           <div
             className="name"
             onClick={() => {
               if (['北京', '广州', '上海', '深圳'].includes(item.label)) {
-                window.localStorage.setItem('currentCity', JSON.stringify({
+                localStorage.setItem('currentCity', JSON.stringify({
                   label: item.label,
                   value: item.value
                 }))
@@ -167,7 +167,7 @@ class City extends React.Component {
           // 点击索引滚动到对应的位置
           onClick={() => {
             let list = this.listRef.current
-            list.scrollToRow (index)
+            list.scrollToRow(index)
           }}
           className="city-index-item">
           <span className={currentIndex === index ? 'index-active' : ''}>

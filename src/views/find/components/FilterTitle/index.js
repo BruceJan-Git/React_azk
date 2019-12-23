@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Flex, Icon } from 'antd-mobile'
+import { Flex } from 'antd-mobile'
 
 import styles from './index.module.css'
 
@@ -28,12 +28,7 @@ export default function FilterTitle(props) {
           }}
           className={state ? selectClass : ''}>
           <span>{item.title}</span>
-          {/* <i className="iconfont icon-arrow" /> */}
-          <Icon type='down' style={{
-            width: '16px',
-            height: '16px',
-            verticalAlign: 'bottom'
-          }}></Icon>
+          <i className="iconfont icon-sanjiaodown" />
         </span>
       </Flex.Item>
     )
