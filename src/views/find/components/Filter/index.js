@@ -25,7 +25,23 @@ export default class Filter extends Component {
   }
 
   render() {
-    let { openType } = this.state
+    let { openType, filtersData: { area, price, subway, rentType } } = this.state
+    let data = null
+    let cols = 1
+    switch (openType) {
+      case 'area':
+        data = [area, subway]
+        cols = 3
+        break;
+      case 'mode':
+        data = rentType
+        break;
+      case 'price':
+        data = price
+        break;
+      default:
+        break;
+    }
     return (
       <div className={styles.root}>
         {/* 前三个菜单的遮罩层 */}
@@ -40,7 +56,8 @@ export default class Filter extends Component {
             changeSelect={this.changeSelect}
             menuState={this.state.menuState} />
           {/* 前三个菜单对应的内容： */}
-          {(openType === 'mode' || openType === 'area' || openType === 'price') && <FilterPicker />}
+          {(openType === 'mode' || openType === 'area' || openType === 'price') &&
+            <FilterPicker data={data} cols={cols} />}
 
           {/* 最后一个菜单对应的内容： */}
           {/* <FilterMore /> */}
@@ -77,6 +94,7 @@ export default class Filter extends Component {
     this.setState({
       filtersData: res.body
     })
+    console.log(this.state.filtersData)
   }
 
 }
