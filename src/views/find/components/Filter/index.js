@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 
 import FilterTitle from '../FilterTitle'
 import FilterPicker from '../FilterPicker'
@@ -6,6 +7,7 @@ import FilterPicker from '../FilterPicker'
 
 // css模块化导入方式 不再是import ''
 import styles from './index.module.css'
+import { currentCity } from '../../../../utils/api'
 
 export default class Filter extends Component {
   constructor(props) {
@@ -17,7 +19,8 @@ export default class Filter extends Component {
         price: false,
         more: false
       },
-      openType: ''
+      openType: '',
+      filtersData: {}
     }
   }
 
@@ -31,7 +34,7 @@ export default class Filter extends Component {
             onClick={this.handlerCancle}
             className={styles.mask} />}
         <div className={styles.content}>
-          
+
           {/* 标题栏 */}
           <FilterTitle
             changeSelect={this.changeSelect}
@@ -44,6 +47,9 @@ export default class Filter extends Component {
         </div>
       </div>
     )
+  }
+  componentDidMount() {
+    this.loadFilterData()
   }
   // 控制title选中与否
   changeSelect = (props) => {
@@ -58,6 +64,18 @@ export default class Filter extends Component {
   handlerCancle = () => {
     this.setState({
       openType: ''
+    })
+  }
+  // 获取筛选条件数据
+  loadFilterData = async () => {
+    let city = await currentCity()
+    let res = await axios('houses/condition', {
+      params: {
+        id: city.value
+      }
+    })
+    this.setState({
+      filtersData: res.body
     })
   }
 
