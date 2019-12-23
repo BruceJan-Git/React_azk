@@ -12,7 +12,7 @@ export default class FilterPicker extends Component {
     }
   }
   render() {
-    let { data, cols, onSave, type } = this.props
+    let { data, cols, onSave, type, onCancel } = this.props
     // console.log(data)
     return (
       <>
@@ -24,7 +24,7 @@ export default class FilterPicker extends Component {
           cols={cols} />
 
         {/* 底部按钮 */}
-        <FilterFooter onSave={() => { onSave(this.state.value, type) }} />
+        <FilterFooter onCancel={onCancel} onSave={() => { onSave(this.state.value, type) }} />
       </>
     )
   }

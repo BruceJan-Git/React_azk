@@ -20,7 +20,13 @@ export default class Filter extends Component {
         more: false
       },
       openType: '',
-      filtersData: {}
+      filtersData: {},
+      menuValue: {
+        area: ['area', 'null'],
+        mode: ['null'],
+        price: ['null'],
+        more: []
+      }
     }
   }
 
@@ -59,6 +65,7 @@ export default class Filter extends Component {
           {(openType === 'mode' || openType === 'area' || openType === 'price') &&
             <FilterPicker
               type={openType}
+              onCancel={this.handlerCancle}
               onSave={this.onSave}
               data={data}
               cols={cols} />}
@@ -102,7 +109,14 @@ export default class Filter extends Component {
   }
   // 控制点击确定按钮
   onSave = (value, type) => {
-    console.log(value + '====' + type)
+    // console.log(value, type) // 默认选中area
+    // console.log(value + '====' + type)
+    this.setState({
+      menuValue: {
+        ...this.state.menuValue,
+        [type]: value
+      }
+    }, () => { console.log(this.state.menuValue) })
   }
 
 }
