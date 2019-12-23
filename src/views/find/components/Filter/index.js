@@ -57,9 +57,10 @@ export default class Filter extends Component {
             menuState={this.state.menuState} />
           {/* 前三个菜单对应的内容： */}
           {(openType === 'mode' || openType === 'area' || openType === 'price') &&
-            <FilterPicker 
+            <FilterPicker
+              type={openType}
               onSave={this.onSave}
-              data={data} 
+              data={data}
               cols={cols} />}
 
           {/* 最后一个菜单对应的内容： */}
@@ -100,8 +101,8 @@ export default class Filter extends Component {
     // console.log(this.state.filtersData)
   }
   // 控制点击确定按钮
-  onSave = () => {
-    console.log('onSave')
+  onSave = (value, type) => {
+    console.log(value + '====' + type)
   }
 
 }
