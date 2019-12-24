@@ -55,7 +55,7 @@ export default class Filter extends Component {
         {/* 前三个菜单的遮罩层 */}
         {(openType === 'mode' || openType === 'area' || openType === 'price') &&
           <div
-            onClick={this.handlerCancle}
+            onClick={() => { this.handlerCancle(openType) }}
             className={styles.mask} />}
         <div className={styles.content}>
 
@@ -85,22 +85,15 @@ export default class Filter extends Component {
     this.loadFilterData()
   }
   // 控制title以及弹窗是否有选值
-  changeSelect = (props) => {
-    // let menuState = { ...this.state.menuState }
-    // menuState[props] = !menuState[props]
-    // this.setState({
-    //   menuState: menuState,
-    //   openType: props
-    // })
+  changeSelect = (type) => {
     /**
-     * props是FilterTitle中传过来的类型
+     * type是FilterTitle中传过来的类型
      * 1. 控制菜单选中与否控制逻辑
-     * 2. 控制filterPicker中选项的选中与否
+     * 2. 检测filterPicker中选项的选中与否
      * 3. 当切换filterPiecker时只选中一个或者选中已经选中的title
      */
     let { menuState, menuValue } = { ...this.state }
     let newMenuState = { ...this.state.menuState }
-    // 遍历菜单状态,取状态值从而进行判断
     Object.keys(menuState).forEach(item => {
       /**
        * 获取对象的值
@@ -109,9 +102,9 @@ export default class Filter extends Component {
        * 取处键名对应的键值(数组)的第一项,和默认值进行比较判断
        */
       let v = menuValue[item]
-      if (item === props) {
-        newMenuState[props] = true
-      } else if ((item === 'area' && v.length === 3) || v[0] === 'subway') {
+      if (item === type) {
+        newMenuState[item] = true
+      } else if (item === 'area' && (v.length === 3 || v[0] !== 'area')) {
         newMenuState[item] = true
       } else if (item === 'mode' && v[0] !== 'null') {
         newMenuState[item] = true
@@ -125,13 +118,29 @@ export default class Filter extends Component {
     })
     this.setState({
       menuState: newMenuState,
-      openType: props
+      openType: type
     })
   }
   // 控制遮罩层关闭
-  handlerCancle = () => {
+  handlerCancle = (type) => {
+    console.log('cancel')
+    let { menuState, menuValue } = this.state
+    let newMenuStatus = { ...menuState }
+    let v = menuValue[type]
+    if (type === 'area' && (v.length === 3 || v[0] !== 'area')) {
+      newMenuStatus[type] = true
+    } else if (type === 'mode' && v[0] !== 'null') {
+      newMenuStatus[type] = true
+    } else if (type === 'price' && v[0] !== 'null') {
+      newMenuStatus[type] = true
+    } else if (type === 'more' && v.length !== 0) {
+      newMenuStatus[type] = true
+    } else {
+      newMenuStatus[type] = false
+    }
     this.setState({
-      openType: ''
+      openType: '',
+      menuState: newMenuStatus
     })
   }
   // 获取筛选条件数据
@@ -149,14 +158,12 @@ export default class Filter extends Component {
   }
   // 控制点击确定按钮
   onSave = (value, type) => {
-    // console.log(value, type) // 默认选中area
-    // console.log(value + '====' + type)
     this.setState({
       menuValue: {
         ...this.state.menuValue,
         [type]: value,
       }
-    }, () => { this.handlerCancle() })
+    }, () => { this.setState({openType:''}) }) // 不再调用其它函数
   }
 
 }

@@ -24,7 +24,7 @@ export default class FilterPicker extends Component {
           cols={cols} />
 
         {/* 底部按钮 */}
-        <FilterFooter onCancel={onCancel} onSave={() => { onSave(this.state.value, type) }} />
+        <FilterFooter onCancel={() => {onCancel(type)}} onSave={() => { onSave(this.state.value, type) }} />
       </>
     )
   }
