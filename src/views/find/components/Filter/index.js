@@ -12,6 +12,12 @@ import { currentCity } from '../../../../utils/api'
 export default class Filter extends Component {
   constructor(props) {
     super(props);
+    /**
+     * menuState=>title菜单每一项选中与否的状态
+     * menuValue=>title菜单每一项的默认值
+     * openType=>当前点击title的值
+     * filterData=>筛选条件的数据
+     */
     this.state = {
       menuState: {
         area: false,
@@ -104,16 +110,8 @@ export default class Filter extends Component {
       let v = menuValue[item]
       if (item === type) {
         newMenuState[item] = true
-      } else if (item === 'area' && (v.length === 3 || v[0] !== 'area')) {
-        newMenuState[item] = true
-      } else if (item === 'mode' && v[0] !== 'null') {
-        newMenuState[item] = true
-      } else if (item === 'price' && v[0] !== 'null') {
-        newMenuState[item] = true
-      } else if (item === 'more' && v.length !== 0) {
-        newMenuState[item] = true
       } else {
-        newMenuState[item] = false
+        this.handlerSelectCom(item, v, newMenuState)
       }
     })
     this.setState({
@@ -123,24 +121,13 @@ export default class Filter extends Component {
   }
   // 控制遮罩层关闭
   handlerCancle = (type) => {
-    console.log('cancel')
     let { menuState, menuValue } = this.state
-    let newMenuStatus = { ...menuState }
+    let newMenuState = { ...menuState }
     let v = menuValue[type]
-    if (type === 'area' && (v.length === 3 || v[0] !== 'area')) {
-      newMenuStatus[type] = true
-    } else if (type === 'mode' && v[0] !== 'null') {
-      newMenuStatus[type] = true
-    } else if (type === 'price' && v[0] !== 'null') {
-      newMenuStatus[type] = true
-    } else if (type === 'more' && v.length !== 0) {
-      newMenuStatus[type] = true
-    } else {
-      newMenuStatus[type] = false
-    }
+    this.handlerSelectCom(type, v, newMenuState)
     this.setState({
       openType: '',
-      menuState: newMenuStatus
+      menuState: newMenuState
     })
   }
   // 获取筛选条件数据
@@ -163,7 +150,21 @@ export default class Filter extends Component {
         ...this.state.menuValue,
         [type]: value,
       }
-    }, () => { this.setState({openType:''}) }) // 不再调用其它函数
+    }, () => { this.setState({ openType: '' }) }) // 不再调用其它函数
+  }
+  // 通用筛选条件方法封装
+  handlerSelectCom = (type, v, newMenuState) => {
+    if (type === 'area' && (v.length === 3 || v[0] !== 'area')) {
+      newMenuState[type] = true
+    } else if (type === 'mode' && v[0] !== 'null') {
+      newMenuState[type] = true
+    } else if (type === 'price' && v[0] !== 'null') {
+      newMenuState[type] = true
+    } else if (type === 'more' && v.length !== 0) {
+      newMenuState[type] = true
+    } else {
+      newMenuState[type] = false
+    }
   }
 
 }
