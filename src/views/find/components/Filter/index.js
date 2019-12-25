@@ -87,10 +87,10 @@ export default class Filter extends Component {
               cols={cols} />}
 
           {/* 最后一个菜单对应的内容： */}
-          {openType === 'more' && <FilterMore 
+          {openType === 'more' && <FilterMore
             defaultData={defaultData}
-            onSave={this.onSave} 
-            onCancel={this.handlerCancle} 
+            onSave={this.onSave}
+            onCancel={this.handlerCancle}
             data={data} />}
         </div>
       </div>
@@ -163,7 +163,11 @@ export default class Filter extends Component {
       menuValue: newMenuValue,
       openType: '',
       menuState: newMenuState
-    }, () => { console.log(this.state.menuValue) })
+    }, () => {
+      // console.log(this.state.menuValue)
+      let params = this.readParams()
+      console.log(params)
+    })
   }
   // 通用筛选条件方法封装
   handlerSelectCom = (type, v, newMenuState) => {
@@ -178,6 +182,35 @@ export default class Filter extends Component {
     } else {
       newMenuState[type] = false
     }
+  }
+  // 封装/组合需要传参的数据
+  readParams = () => {
+    // 1. area的参数筛选组合
+    let { menuValue } = this.state
+    let filters = {}
+    // 获取区域参数需要的参数
+    let areaValue = menuValue.area
+    let areaKey = areaValue[0]
+    if (areaValue.length === 3) {
+      if (areaValue[2] === 'null') {
+        // 如果第三项值位null,选中了两项值,则取第二项值,索引位1
+        filters[areaKey] = areaValue[1]
+      } else {
+        // 否则选中三个值,则取第三个值,索引为2
+        filters[areaKey] = areaValue[2]
+      }
+    }
+    // 2. rentype参数筛选组合
+    let mode = menuValue.mode
+    filters.rentType = mode[0]
+    // 3. price参数筛选组合
+    let price = menuValue.price
+    filters.price = price[0]
+    // more参数筛选组合
+    let more = menuValue.more
+    filters.more = more[0]
+
+    return filters
   }
 
 }
