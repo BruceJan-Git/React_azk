@@ -37,7 +37,7 @@ export default class FilterMore extends Component {
         </div>
 
         {/* 底部按钮 */}
-        <FilterFooter className={styles.footer} />
+        <FilterFooter  onCancel={() => {this.props.onCancel('more')}} className={styles.footer} />
       </div>
     )
   }

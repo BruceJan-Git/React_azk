@@ -3,7 +3,7 @@ import axios from 'axios'
 
 import FilterTitle from '../FilterTitle'
 import FilterPicker from '../FilterPicker'
-// import FilterMore from '../FilterMore'
+import FilterMore from '../FilterMore'
 
 // css模块化导入方式 不再是import ''
 import styles from './index.module.css'
@@ -53,6 +53,9 @@ export default class Filter extends Component {
       case 'price':
         data = price
         break;
+      // case 'more':
+      //   data = more
+      //   break;
       default:
         break;
     }
@@ -82,7 +85,7 @@ export default class Filter extends Component {
               cols={cols} />}
 
           {/* 最后一个菜单对应的内容： */}
-          {/* <FilterMore /> */}
+          {openType === 'more' && <FilterMore onCancel={this.handlerCancle} />}
         </div>
       </div>
     )
@@ -144,13 +147,17 @@ export default class Filter extends Component {
     // console.log(this.state.filtersData)
   }
   // 控制点击确定按钮
-  onSave = (value, type) => {
+  onSave = (v, type) => {
+    let { menuState, menuValue } = this.state
+    let newMenuValue = { ...menuValue }
+    let newMenuState = { ...menuState }
+    this.handlerSelectCom(type, v, newMenuState)
+    newMenuValue[type] = v
     this.setState({
-      menuValue: {
-        ...this.state.menuValue,
-        [type]: value,
-      }
-    }, () => { this.setState({ openType: '' }) }) // 不再调用其它函数
+      menuValue: newMenuValue,
+      openType: '',
+      menuState: newMenuState
+    })
   }
   // 通用筛选条件方法封装
   handlerSelectCom = (type, v, newMenuState) => {
