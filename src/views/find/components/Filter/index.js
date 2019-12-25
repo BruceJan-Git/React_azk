@@ -87,7 +87,11 @@ export default class Filter extends Component {
               cols={cols} />}
 
           {/* 最后一个菜单对应的内容： */}
-          {openType === 'more' && <FilterMore onCancel={this.handlerCancle} data={data} />}
+          {openType === 'more' && <FilterMore 
+            defaultData={defaultData}
+            onSave={this.onSave} 
+            onCancel={this.handlerCancle} 
+            data={data} />}
         </div>
       </div>
     )
@@ -159,7 +163,7 @@ export default class Filter extends Component {
       menuValue: newMenuValue,
       openType: '',
       menuState: newMenuState
-    })
+    }, () => { console.log(this.state.menuValue) })
   }
   // 通用筛选条件方法封装
   handlerSelectCom = (type, v, newMenuState) => {

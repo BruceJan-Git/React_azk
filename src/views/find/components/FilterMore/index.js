@@ -8,7 +8,7 @@ export default class FilterMore extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectValue: []
+      selectValue: this.props.defaultData || []
     }
   }
 
@@ -50,10 +50,18 @@ export default class FilterMore extends Component {
         </div>
 
         {/* 底部按钮 */}
-        <FilterFooter 
+        <FilterFooter
+          className={styles.footer}
           btnName='清除'
-          onCancel={() => { this.props.onCancel('more') }} 
-          className={styles.footer} />
+          onSave={() => {
+            this.props.onSave(this.state.selectValue, 'more')
+          }}
+          onCancel={() => {
+            this.setState({
+              selectValue: []
+            })
+            this.props.onCancel('more')
+          }} />
       </div>
     )
   }
