@@ -37,7 +37,7 @@ export default class Filter extends Component {
   }
 
   render() {
-    let { openType, menuValue, filtersData: { area, price, subway, rentType } } = this.state
+    let { openType, menuValue, filtersData: { area, price, subway, rentType, roomType, oriented, floor, characteristic } } = this.state
     // 弹窗组件的默认值
     let data = null
     let cols = 1
@@ -53,9 +53,11 @@ export default class Filter extends Component {
       case 'price':
         data = price
         break;
-      // case 'more':
-      //   data = more
-      //   break;
+      case 'more':
+        data = {
+          roomType, oriented, floor, characteristic
+        }
+        break;
       default:
         break;
     }
@@ -85,7 +87,7 @@ export default class Filter extends Component {
               cols={cols} />}
 
           {/* 最后一个菜单对应的内容： */}
-          {openType === 'more' && <FilterMore onCancel={this.handlerCancle} />}
+          {openType === 'more' && <FilterMore onCancel={this.handlerCancle} data={data} />}
         </div>
       </div>
     )
