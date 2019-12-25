@@ -165,8 +165,9 @@ export default class Filter extends Component {
       menuState: newMenuState
     }, () => {
       // console.log(this.state.menuValue)
+      // console.log(params)
       let params = this.readParams()
-      console.log(params)
+      this.props.loadListData(params)
     })
   }
   // 通用筛选条件方法封装

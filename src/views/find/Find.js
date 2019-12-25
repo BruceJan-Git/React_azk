@@ -3,12 +3,14 @@ import { Flex } from 'antd-mobile'
 import { currentCity } from '../../utils/api'
 import './find.scss'
 import Filter from './components/Filter'
-
+import axios from 'axios'
 class Find extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      city: ''
+      city: '',
+      listData: '',
+      total: 0
     }
   }
 
@@ -28,32 +30,44 @@ class Find extends React.Component {
             <Flex className="search">
               {/* 位置 */}
               <div className="location" >
-                <span className="name">{this.state.city}</span>
+                <span className="name">{this.state.city.label}</span>
                 {/* <i className="iconfont icon-arrow" /> */}
               </div>
 
               {/* 搜索表单 */}
               <div className="form" >
-                <i className="iconfont icon-tubiao-" style={styles.search}/>
+                <i className="iconfont icon-tubiao-" style={styles.search} />
                 <input className="text" placeholder='请输入小区或地址'></input>
               </div>
             </Flex>
             {/* 右侧地图图标 */}
-            <i className="iconfont icon-ditu" style={{fontSize:'30px'}} />
+            <i className="iconfont icon-ditu" style={{ fontSize: '30px' }} />
           </Flex>
         </Flex>
         {/* 条件筛选找房 */}
-        <Filter></Filter>
+        <Filter loadListData={this.loadListData}></Filter>
       </div>
     )
   }
   componentDidMount() {
     currentCity().then(res => (
       this.setState({
-        city: res.label
+        city: res
       })
     ))
   }
+  loadListData = async (params) => {
+    params.cityId = this.state.city.value
+    let res = await axios('houses', {
+      params: params,
+    })
+    console.log(params)
+    this.setState({
+      listData: res.body.list,
+      total: res.body.count
+    })
+  }
+
 }
 
 export default Find
