@@ -48,7 +48,7 @@ class Home extends React.Component {
   }
 
   // 清理不再使用的资源
-  componentWillMount () {
+  componentWillUnmount () {
     myEmitter.off('event', this.changeMenu)
   }
   // 渲染tabBar
