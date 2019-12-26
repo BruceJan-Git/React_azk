@@ -5,7 +5,7 @@ import './find.scss'
 import Filter from './components/Filter'
 import axios from 'axios'
 import 'react-virtualized/styles.css'
-import { List, AutoSizer } from 'react-virtualized'
+import { List, AutoSizer, WindowScroller } from 'react-virtualized'
 import HouseItem from '../../components/HouseItem/index'
 
 class Find extends React.Component {
@@ -54,16 +54,27 @@ class Find extends React.Component {
         <Filter onFilter={this.onFilter}></Filter>
         {/* 列表数据 */}
         <div className='list-contant'>
-          {listData.length > 0 && <AutoSizer>
-            {({ width, height }) => (
-              <List
-                width={width}
-                height={height}
-                rowHeight={120}
-                rowCount={10}
-                rowRenderer={this.renderHouseItems} />
-            )}
-          </AutoSizer>}
+          {listData.length > 0 &&
+            <WindowScroller>
+              {({ height, isScrolling, scrollTop }) => {
+                return (
+                  <AutoSizer>
+                    {({ width }) => (
+                      <List
+                        autoHeight
+                        scrollTop={scrollTop}
+                        isScrolling={isScrolling}
+                        width={width}
+                        height={height}
+                        rowHeight={120}
+                        rowCount={10}
+                        rowRenderer={this.renderHouseItems} />
+                    )}
+                  </AutoSizer>
+                )
+              }}
+            </WindowScroller>
+          }
         </div>
       </React.Fragment>
     )
