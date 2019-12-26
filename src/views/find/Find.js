@@ -9,8 +9,9 @@ class Find extends React.Component {
     super(props);
     this.state = {
       city: '',
-      listData: '',
-      total: 0
+      listData: [],
+      total: 0,
+      conditions: {}
     }
   }
 
@@ -45,26 +46,37 @@ class Find extends React.Component {
           </Flex>
         </Flex>
         {/* 条件筛选找房 */}
-        <Filter loadListData={this.loadListData}></Filter>
+        <Filter onFilter={this.onFilter}></Filter>
       </div>
     )
   }
-  componentDidMount() {
-    currentCity().then(res => (
-      this.setState({
-        city: res
-      })
-    ))
-  }
-  loadListData = async (params) => {
-    params.cityId = this.state.city.value
-    let res = await axios('houses', {
-      params: params,
+  async componentDidMount() {
+    let res = await currentCity()
+    this.setState({
+      city: res
+    }, () => {
+      this.loadListData()
     })
-    console.log(params)
+  }
+  loadListData = async () => {
+    let { conditions } = this.state
+    conditions.cityId = this.state.city.value
+    // 分页条件查询参数
+    conditions.start = 1
+    conditions.end = 10
+    let res = await axios('houses', {
+      params: conditions,
+    })
     this.setState({
       listData: res.body.list,
       total: res.body.count
+    })
+  }
+  onFilter = (conditions) => {
+    this.setState({
+      conditions: conditions
+    }, () => {
+      this.loadListData()
     })
   }
 

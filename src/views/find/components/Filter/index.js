@@ -167,7 +167,7 @@ export default class Filter extends Component {
       // console.log(this.state.menuValue)
       // console.log(params)
       let params = this.readParams()
-      this.props.loadListData(params)
+      this.props.onFilter(params)
     })
   }
   // 通用筛选条件方法封装
