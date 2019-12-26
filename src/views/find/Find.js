@@ -4,6 +4,10 @@ import { currentCity } from '../../utils/api'
 import './find.scss'
 import Filter from './components/Filter'
 import axios from 'axios'
+import 'react-virtualized/styles.css'
+import { List, AutoSizer } from 'react-virtualized'
+import HouseItem from '../../components/HouseItem/index'
+
 class Find extends React.Component {
   constructor(props) {
     super(props);
@@ -16,6 +20,7 @@ class Find extends React.Component {
   }
 
   render() {
+    let { listData } = this.state
     let styles = {
       search: {
         fontSize: '24px',
@@ -23,7 +28,7 @@ class Find extends React.Component {
       }
     }
     return (
-      <div>
+      <React.Fragment>
         <Flex className='header'>
           <i className="iconfont icon-zuojiantou" style={{ fontSize: '24px' }} onClick={() => { this.props.history.push('index/') }} />
           <Flex className='search-box searchHeader'>
@@ -47,7 +52,20 @@ class Find extends React.Component {
         </Flex>
         {/* 条件筛选找房 */}
         <Filter onFilter={this.onFilter}></Filter>
-      </div>
+        {/* 列表数据 */}
+        <div className='list-contant'>
+          {listData.length > 0 && <AutoSizer>
+            {({ width, height }) => (
+              <List
+                width={width}
+                height={height}
+                rowHeight={120}
+                rowCount={10}
+                rowRenderer={this.renderHouseItems} />
+            )}
+          </AutoSizer>}
+        </div>
+      </React.Fragment>
     )
   }
   async componentDidMount() {
@@ -78,6 +96,13 @@ class Find extends React.Component {
     }, () => {
       this.loadListData()
     })
+  }
+  renderHouseItems = ({ key, index, style }) => {
+    let { listData } = this.state
+    let itemData = listData[index]
+    return (
+      <HouseItem key={key} style={style} {...itemData} />
+    )
   }
 
 }

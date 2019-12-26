@@ -28,7 +28,7 @@ class Home extends React.Component {
   }
   render() {
     return (
-      <div>
+      <React.Fragment>
         <Switch>
           <Redirect from='/home' to='/home/index' exact />
           <Route path='/home/index' component={Index} />
@@ -43,7 +43,7 @@ class Home extends React.Component {
           noRenderContent={true}>
           {this.renderMenuItem()}
         </TabBar>
-      </div>
+      </React.Fragment>
     )
   }
 
