@@ -5,7 +5,7 @@ import './find.scss'
 import Filter from './components/Filter'
 import axios from 'axios'
 import 'react-virtualized/styles.css'
-import { List, AutoSizer, WindowScroller } from 'react-virtualized'
+import { List, AutoSizer, WindowScroller, InfiniteLoader } from 'react-virtualized'
 import HouseItem from '../../components/HouseItem/index'
 
 class Find extends React.Component {
@@ -20,7 +20,7 @@ class Find extends React.Component {
   }
 
   render() {
-    let { listData } = this.state
+    let { listData, total } = this.state
     let styles = {
       search: {
         fontSize: '24px',
@@ -55,30 +55,43 @@ class Find extends React.Component {
         {/* 列表数据 */}
         <div className='list-contant'>
           {listData.length > 0 &&
-            <WindowScroller>
-              {({ height, isScrolling, scrollTop }) => {
+            <InfiniteLoader
+              isRowLoaded={this.isRowLoaded}
+              loadMoreRows={this.loadMoreRows}
+              rowCount={total}
+            >
+              {({ onRowsRendered, registerChild }) => {
                 return (
-                  <AutoSizer>
-                    {({ width }) => (
-                      <List
-                        autoHeight
-                        scrollTop={scrollTop}
-                        isScrolling={isScrolling}
-                        width={width}
-                        height={height}
-                        rowHeight={120}
-                        rowCount={10}
-                        rowRenderer={this.renderHouseItems} />
-                    )}
-                  </AutoSizer>
+                  <WindowScroller>
+                    {({ height, isScrolling, scrollTop }) => {
+                      return (
+                        <AutoSizer>
+                          {({ width }) => (
+                            <List
+                              autoHeight
+                              scrollTop={scrollTop}
+                              isScrolling={isScrolling}
+                              onRowsRendered={onRowsRendered}
+                              ref={registerChild}
+                              width={width}
+                              height={height}
+                              rowHeight={120}
+                              rowCount={total}
+                              rowRenderer={this.renderHouseItems} />
+                          )}
+                        </AutoSizer>
+                      )
+                    }}
+                  </WindowScroller>
                 )
               }}
-            </WindowScroller>
+            </InfiniteLoader>
           }
         </div>
       </React.Fragment>
     )
   }
+
   async componentDidMount() {
     let res = await currentCity()
     this.setState({
@@ -114,6 +127,28 @@ class Find extends React.Component {
     return (
       <HouseItem key={key} style={style} {...itemData} />
     )
+  }
+  loadMoreRows = ({ startIndex, stopIndex }) => {
+    console.log(startIndex, stopIndex)
+    return new Promise(async (resolve, reject) => {
+      let res = await axios.get('houses', {
+        params: {
+          ...this.state.conditions,
+          cityId: this.state.city.value,
+          start: startIndex,
+          end: stopIndex
+        }
+      })
+      this.setState({
+        total: res.body.count,
+        listData: [...this.state.listData, ...res.body.list]
+      },() => {
+        resolve()
+      })
+    })
+  }
+  isRowLoaded = ({ index }) => {
+    return !!this.state.listData[index];
   }
 
 }
