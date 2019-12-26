@@ -100,19 +100,28 @@ class Find extends React.Component {
       this.loadListData()
     })
   }
-  loadListData = async () => {
+  /**
+   * @cityId string require
+   * @startIndex number 开始索引
+   * @stopIndex number 结束缩影
+   * @conditions Object 房源查询筛选条件数据
+   */
+  loadListData = async (startIndex, stopIndex) => {
     let { conditions } = this.state
     conditions.cityId = this.state.city.value
     // 分页条件查询参数
-    conditions.start = 1
-    conditions.end = 10
+    conditions.start = startIndex || 1
+    conditions.end = stopIndex || 10
     let res = await axios('houses', {
       params: conditions,
     })
-    this.setState({
-      listData: res.body.list,
-      total: res.body.count
-    })
+    if (conditions.start === 1) {
+      this.setState({
+        listData: res.body.list,
+        total: res.body.count
+      }, () => { console.log(this.state.conditions) })
+    }
+    return res.body
   }
   onFilter = (conditions) => {
     this.setState({
@@ -129,22 +138,26 @@ class Find extends React.Component {
     )
   }
   loadMoreRows = ({ startIndex, stopIndex }) => {
-    console.log(startIndex, stopIndex)
     return new Promise(async (resolve, reject) => {
-      let res = await axios.get('houses', {
-        params: {
-          ...this.state.conditions,
-          cityId: this.state.city.value,
-          start: startIndex,
-          end: stopIndex
-        }
-      })
+      let res = await this.loadListData(startIndex, stopIndex)
       this.setState({
-        total: res.body.count,
-        listData: [...this.state.listData, ...res.body.list]
-      },() => {
-        resolve()
-      })
+        total: res.count,
+        listData: [...this.state.listData, ...res.list]
+      }, () => { resolve() })
+      // let res = await axios.get('houses', {
+      //   params: {
+      //     ...this.state.conditions,
+      //     cityId: this.state.city.value,
+      //     start: startIndex,
+      //     end: stopIndex
+      //   }
+      // })
+      // this.setState({
+      //   total: res.body.count,
+      //   listData: [...this.state.listData, ...res.body.list]
+      // },() => {
+      //   resolve()
+      // })
     })
   }
   isRowLoaded = ({ index }) => {
