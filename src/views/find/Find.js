@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex } from 'antd-mobile'
+import { Flex, Toast } from 'antd-mobile'
 import { currentCity } from '../../utils/api'
 import './find.scss'
 import Filter from './components/Filter'
@@ -7,6 +7,7 @@ import axios from 'axios'
 import 'react-virtualized/styles.css'
 import { List, AutoSizer, WindowScroller, InfiniteLoader } from 'react-virtualized'
 import HouseItem from '../../components/HouseItem/index'
+import NoHouse from '../../components/NoHouse/index'
 
 class Find extends React.Component {
   constructor(props) {
@@ -15,12 +16,13 @@ class Find extends React.Component {
       city: '',
       listData: [],
       total: 0,
-      conditions: {}
+      conditions: {},
+      isFinish: false
     }
   }
 
   render() {
-    let { listData, total } = this.state
+    let { listData, total, isFinish } = this.state
     let styles = {
       search: {
         fontSize: '24px',
@@ -88,6 +90,7 @@ class Find extends React.Component {
             </InfiniteLoader>
           }
         </div>
+        {isFinish === false && total === 0 && <NoHouse>暂无房源</NoHouse>}
       </React.Fragment>
     )
   }
@@ -107,6 +110,10 @@ class Find extends React.Component {
    * @conditions Object 房源查询筛选条件数据
    */
   loadListData = async (startIndex, stopIndex) => {
+    Toast.info('loading...')
+    this.setState({
+      isFinish: true
+    })
     let { conditions } = this.state
     conditions.cityId = this.state.city.value
     // 分页条件查询参数
@@ -119,8 +126,12 @@ class Find extends React.Component {
       this.setState({
         listData: res.body.list,
         total: res.body.count
-      }, () => { console.log(this.state.conditions) })
+      })
     }
+    Toast.hide()
+    this.setState({
+      isFinish: false
+    })
     return res.body
   }
   onFilter = (conditions) => {
@@ -133,9 +144,17 @@ class Find extends React.Component {
   renderHouseItems = ({ key, index, style }) => {
     let { listData } = this.state
     let itemData = listData[index]
-    return (
-      <HouseItem key={key} style={style} {...itemData} />
-    )
+    if (!itemData) {
+      return (
+        <div style={style} key={key}>
+          <p className='loading'></p>
+        </div>
+      )
+    } else {
+      return (
+        <HouseItem key={key} style={style} {...itemData} />
+      )
+    }
   }
   loadMoreRows = ({ startIndex, stopIndex }) => {
     return new Promise(async (resolve, reject) => {
