@@ -8,6 +8,7 @@ import 'react-virtualized/styles.css'
 import { List, AutoSizer, WindowScroller, InfiniteLoader } from 'react-virtualized'
 import HouseItem from '../../components/HouseItem/index'
 import NoHouse from '../../components/NoHouse/index'
+import Stick from '../../components/Stick/index'
 
 class Find extends React.Component {
   constructor(props) {
@@ -53,7 +54,9 @@ class Find extends React.Component {
           </Flex>
         </Flex>
         {/* 条件筛选找房 */}
-        <Filter onFilter={this.onFilter}></Filter>
+        <Stick>
+          <Filter onFilter={this.onFilter}></Filter>
+        </Stick>
         {/* 列表数据 */}
         <div className='list-contant'>
           {listData.length > 0 &&
