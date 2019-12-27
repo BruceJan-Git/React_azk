@@ -9,6 +9,7 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 import Login from './views/login/Login'
 import Home from './views/home/Home'
 import City from './views/city/City'
+import Detail from './views/detail/index'
 import Test from './views/test/test'
 import '../src/utils/api' // 基准路径/响应拦截
 
@@ -27,6 +28,7 @@ function App() {
         <Route path='/login' component={Login}></Route>
         <Route path='/home' component={Home}></Route>
         <Route path='/city' component={City}></Route>
+        <Route path='/detail/:id' component={Detail}></Route>
         <Redirect from='/' to='/home' exact></Redirect>
         <Route component={Not}></Route>
       </Switch>

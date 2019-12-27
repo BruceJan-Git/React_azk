@@ -113,7 +113,7 @@ class Find extends React.Component {
    * @conditions Object 房源查询筛选条件数据
    */
   loadListData = async (startIndex, stopIndex) => {
-    Toast.info('loading...')
+    Toast.loading('加载中...')
     this.setState({
       isFinish: true
     })
@@ -155,7 +155,11 @@ class Find extends React.Component {
       )
     } else {
       return (
-        <HouseItem key={key} style={style} {...itemData} />
+        <HouseItem
+          onClick={() => {
+            this.props.history.push('/detail/' + itemData.houseCode)
+          }}
+          key={key} style={style} {...itemData} />
       )
     }
   }
