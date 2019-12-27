@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import { Flex, WingBlank, WhiteSpace, NavBar } from 'antd-mobile'
 
 import { Link } from 'react-router-dom'
@@ -10,6 +11,14 @@ import styles from './index.module.css'
 // const REG_PWD = /^[a-zA-Z_\d]{5,12}$/
 
 class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      password: ''
+    }
+  }
+
   render() {
     return (
       <div className={styles.root}>
@@ -24,6 +33,8 @@ class Login extends Component {
           <form>
             <div className={styles.formItem}>
               <input
+                value={this.state.username}
+                onChange={this.handlerChange}
                 className={styles.input}
                 name="username"
                 placeholder="请输入账号"
@@ -33,6 +44,8 @@ class Login extends Component {
             {/* <div className={styles.error}>账号为必填项</div> */}
             <div className={styles.formItem}>
               <input
+                value={this.state.password}
+                onChange={this.handlerChange}
                 className={styles.input}
                 name="password"
                 type="password"
@@ -42,7 +55,7 @@ class Login extends Component {
             {/* 长度为5到12位，只能出现数字、字母、下划线 */}
             {/* <div className={styles.error}>账号为必填项</div> */}
             <div className={styles.formSubmit}>
-              <button className={styles.submit} type="submit">
+              <button onClick={this.handlerLogin} className={styles.submit} type="button">
                 登 录
               </button>
             </div>
@@ -56,6 +69,21 @@ class Login extends Component {
       </div>
     )
   }
+
+  handlerChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    })
+  }
+
+  handlerLogin = async() => {
+    let res = await axios.post('/user/login',{
+      "username": this.state.username,
+      "password": this.state.password
+    })
+  }
+
+
 }
 
 export default Login
