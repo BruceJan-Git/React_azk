@@ -1,5 +1,5 @@
 import React from 'react';
-import './index.scss'
+import styles from './index.module.scss'
 
 /**
  * 吸顶组件封装
@@ -33,10 +33,10 @@ class Stick extends React.Component {
     let content = this.content.current
     let { top } = holder.getBoundingClientRect()
     if (top <= 0) {
-      content.classList.add('tofixed')
-      holder.style.height = '40px'
+      content.classList.add(styles.tofixed)
+      holder.style.height = this.props.height + 'px'
     } else {
-      content.classList.remove('tofixed')
+      content.classList.remove(styles.tofixed)
       holder.style.height = '0px'
     }
   }

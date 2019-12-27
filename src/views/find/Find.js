@@ -54,7 +54,7 @@ class Find extends React.Component {
           </Flex>
         </Flex>
         {/* 条件筛选找房 */}
-        <Stick>
+        <Stick height='40'>
           <Filter onFilter={this.onFilter}></Filter>
         </Stick>
         {/* 列表数据 */}

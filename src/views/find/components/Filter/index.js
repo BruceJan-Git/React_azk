@@ -169,6 +169,7 @@ export default class Filter extends Component {
       let params = this.readParams()
       this.props.onFilter(params)
     })
+    window.scrollTo(0, 0)
   }
   // 通用筛选条件方法封装
   handlerSelectCom = (type, v, newMenuState) => {
