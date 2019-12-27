@@ -5,12 +5,12 @@ import axios from 'axios'
 import styles from './index.module.css'
 import HousePackage from '../../components/HousePackage'
 import HouseItem from '../../components/HouseItem'
-const BASE_URL = `http://localhost:8080`
+import { API_BASE as BASE_URL } from '../../utils/api'
 // 猜你喜欢
 const recommendHouses = [
   {
     id: 1,
-    src: BASE_URL + '/img/message/1.png',
+    houseImg: '/img/message/1.png',
     desc: '72.32㎡/南 北/低楼层',
     title: '安贞西里 3室1厅',
     price: 4500,
@@ -18,7 +18,7 @@ const recommendHouses = [
   },
   {
     id: 2,
-    src: BASE_URL + '/img/message/2.png',
+    houseImg: '/img/message/2.png',
     desc: '83㎡/南/高楼层',
     title: '天居园 2室1厅',
     price: 7200,
@@ -26,7 +26,7 @@ const recommendHouses = [
   },
   {
     id: 3,
-    src: BASE_URL + '/img/message/3.png',
+    houseImg: '/img/message/3.png',
     desc: '52㎡/西南/低楼层',
     title: '角门甲4号院 1室1厅',
     price: 4300,
@@ -96,112 +96,6 @@ export default class HouseDetail extends Component {
     isFavorite: false
   }
 
-  componentDidMount() {
-    this.getHouseDetail()
-  }
-
-  /* 
-      收藏房源：
-
-      1 给收藏按钮绑定单击事件，创建方法 handleFavorite 作为事件处理程序。
-      2 调用 isAuth 方法，判断是否登录。
-      3 如果未登录，则使用 Modal.alert 提示用户是否去登录。
-      4 如果点击取消，则不做任何操作。
-      5 如果点击去登录，就跳转到登录页面，同时传递 state（登录后，再回到房源收藏页面）。
-      
-      6 根据 isFavorite 判断，当前房源是否收藏。
-      7 如果未收藏，就调用添加收藏接口，添加收藏。
-      8 如果已收藏，就调用删除收藏接口，去除收藏。
-
-      alert('提示', '登录后才能收藏房源，是否去登录?', [
-        { text: '取消' },
-        {
-          text: '去登录',
-          onPress: () => {}
-        }
-      ])
-    */
-
-  // 获取房屋详细信息
-  async getHouseDetail() {
-    const { id } = this.props.match.params
-    // 开启loading
-    this.setState({
-      isLoading: true
-    })
-
-    const res = await axios.get('houses/' + id)
-
-    console.log(res.body)
-
-    this.setState({
-      houseInfo: res.body,
-      isLoading: false
-    })
-
-    const { community, coord } = res.body
-
-    // 渲染地图
-    this.renderMap(community, coord)
-  }
-
-  // 渲染轮播图结构
-  renderSwipers() {
-    const {
-      houseInfo: { houseImg }
-    } = this.state
-
-    return houseImg.map(item => (
-      <a key={item} href="http://itcast.cn">
-        <img src={BASE_URL + item} alt="" />
-      </a>
-    ))
-  }
-
-  // 渲染地图
-  renderMap(community, coord) {
-    const { latitude, longitude } = coord
-
-    const map = new BMap.Map('map')
-    const point = new BMap.Point(longitude, latitude)
-    map.centerAndZoom(point, 17)
-
-    const label = new BMap.Label('', {
-      position: point,
-      offset: new BMap.Size(0, -36)
-    })
-
-    label.setStyle(labelStyle)
-    label.setContent(`
-        <span>${community}</span>
-        <div class="${styles.mapArrow}"></div>
-      `)
-    map.addOverlay(label)
-  }
-
-  // 渲染标签
-  renderTags() {
-    const {
-      houseInfo: { tags }
-    } = this.state
-
-    return tags.map((item, index) => {
-      // 如果标签数量超过3个，后面的标签就都展示位第三个标签的样式
-      let tagClass = ''
-      if (index > 2) {
-        tagClass = 'tag3'
-      } else {
-        tagClass = 'tag' + (index + 1)
-      }
-
-      return (
-        <span key={item} className={[styles.tag, styles[tagClass]].join(' ')}>
-          {item}
-        </span>
-      )
-    })
-  }
-
   render() {
     const {
       isLoading,
@@ -224,7 +118,9 @@ export default class HouseDetail extends Component {
         <NavBar
           mode="dark"
           icon={<Icon type="left" />}
-          onLeftClick={() => console.log('onLeftClick')}
+          onLeftClick={() => {
+            console.log(this.props.history.goBack())
+          }}
         >
           房屋详情
         </NavBar>
@@ -235,8 +131,8 @@ export default class HouseDetail extends Component {
               {this.renderSwipers()}
             </Carousel>
           ) : (
-            ''
-          )}
+              ''
+            )}
         </div>
         {/* 房屋基础信息 */}
         <div className={styles.info}>
@@ -304,8 +200,8 @@ export default class HouseDetail extends Component {
           {supporting.length === 0 ? (
             <div className={styles.titleEmpty}>暂无数据</div>
           ) : (
-            <HousePackage list={supporting} />
-          )}
+              <HousePackage list={supporting} />
+            )}
         </div>
         {/* 房屋概况 */}
         <div className={styles.set}>
@@ -363,4 +259,126 @@ export default class HouseDetail extends Component {
       </div>
     )
   }
+
+  componentDidMount() {
+    this.getHouseDetail()
+  }
+
+  // 渲染轮播图结构
+  renderSwipers() {
+    const {
+      houseInfo: { houseImg }
+    } = this.state
+
+    return houseImg.map(item => (
+      <a key={item} href="http://itcast.cn">
+        <img src={BASE_URL + item} alt="" />
+      </a>
+    ))
+  }
+
+  // 渲染地图
+  renderMap(community, coord) {
+    const { latitude, longitude } = coord
+
+    const map = new BMap.Map('map')
+    const point = new BMap.Point(longitude, latitude)
+    map.centerAndZoom(point, 17)
+
+    const label = new BMap.Label('', {
+      position: point,
+      offset: new BMap.Size(0, -36)
+    })
+
+    label.setStyle(labelStyle)
+    label.setContent(`
+          <span>${community}</span>
+          <div class="${styles.mapArrow}"></div>
+        `)
+    map.addOverlay(label)
+  }
+
+  // 渲染标签
+  renderTags() {
+    const {
+      houseInfo: { tags }
+    } = this.state
+
+    return tags.map((item, index) => {
+      // 如果标签数量超过3个，后面的标签就都展示位第三个标签的样式
+      let tagClass = ''
+      if (index > 2) {
+        tagClass = 'tag3'
+      } else {
+        tagClass = 'tag' + (index + 1)
+      }
+
+      return (
+        <span key={item} className={[styles.tag, styles[tagClass]].join(' ')}>
+          {item}
+        </span>
+      )
+    })
+  }
+
+  // 获取房屋详细信息
+  async getHouseDetail() {
+    const { id } = this.props.match.params
+    // 开启loading
+    this.setState({
+      isLoading: true
+    })
+
+    const res = await axios.get('houses/' + id)
+    this.setState({
+      houseInfo: res.body,
+      isLoading: false
+    })
+
+    const { community, coord } = res.body
+
+    // 渲染地图
+    this.renderMap(community, coord)
+  }
+
+  // 点击收藏
+  handleFavorite = () => {
+    let myToken = sessionStorage.getItem('myToken')
+    if (!myToken) {
+      alert('提示', '登录后才能收藏房源，是否去登录?', [
+        { text: '取消' },
+        {
+          text: '去登录',
+          onPress: () => {
+            this.props.history.push('/login')
+          }
+        }
+      ])
+    }
+  }
+
+  /* 
+      收藏房源：
+
+      1 给收藏按钮绑定单击事件，创建方法 handleFavorite 作为事件处理程序。
+      2 调用 isAuth 方法，判断是否登录。
+      3 如果未登录，则使用 Modal.alert 提示用户是否去登录。
+      4 如果点击取消，则不做任何操作。
+      5 如果点击去登录，就跳转到登录页面，同时传递 state（登录后，再回到房源收藏页面）。
+      
+      6 根据 isFavorite 判断，当前房源是否收藏。
+      7 如果未收藏，就调用添加收藏接口，添加收藏。
+      8 如果已收藏，就调用删除收藏接口，去除收藏。
+
+      alert('提示', '登录后才能收藏房源，是否去登录?', [
+        { text: '取消' },
+        {
+          text: '去登录',
+          onPress: () => {}
+        }
+      ])
+    */
+
+
+
 }
