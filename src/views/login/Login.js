@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Flex, WingBlank, WhiteSpace, NavBar } from 'antd-mobile'
+import { Flex, WingBlank, WhiteSpace, NavBar, Toast } from 'antd-mobile'
 
 import { Link } from 'react-router-dom'
 
@@ -76,11 +76,19 @@ class Login extends Component {
     })
   }
 
-  handlerLogin = async() => {
-    let res = await axios.post('/user/login',{
+  handlerLogin = async () => {
+    let res = await axios.post('/user/login', {
       "username": this.state.username,
       "password": this.state.password
     })
+    let { status, description } = res
+    console.log(res)
+    if (status === 200) {
+      this.props.history.push('/')
+      window.sessionStorage.setItem('mytoken', res.body.token)
+    } else {
+      Toast.info(description)
+    }
   }
 
 
