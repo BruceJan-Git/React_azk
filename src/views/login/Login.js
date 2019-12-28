@@ -1,25 +1,19 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { Flex, WingBlank, WhiteSpace, NavBar, Toast } from 'antd-mobile'
+import { withFormik } from 'formik';
 
 import { Link } from 'react-router-dom'
 
 import styles from './index.module.css'
 
-// 验证规则：
-// const REG_UNAME = /^[a-zA-Z_\d]{5,8}$/
-// const REG_PWD = /^[a-zA-Z_\d]{5,12}$/
-
 class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: ''
-    }
-  }
-
   render() {
+    const {
+      values,
+      handleChange,
+      handleSubmit,
+    } = this.props
     return (
       <div className={styles.root}>
         {/* 顶部导航 */}
@@ -33,8 +27,8 @@ class Login extends Component {
           <form>
             <div className={styles.formItem}>
               <input
-                value={this.state.username}
-                onChange={this.handlerChange}
+                value={values.username}
+                onChange={handleChange}
                 className={styles.input}
                 name="username"
                 placeholder="请输入账号"
@@ -44,8 +38,8 @@ class Login extends Component {
             {/* <div className={styles.error}>账号为必填项</div> */}
             <div className={styles.formItem}>
               <input
-                value={this.state.password}
-                onChange={this.handlerChange}
+                value={values.password}
+                onChange={handleChange}
                 className={styles.input}
                 name="password"
                 type="password"
@@ -55,7 +49,7 @@ class Login extends Component {
             {/* 长度为5到12位，只能出现数字、字母、下划线 */}
             {/* <div className={styles.error}>账号为必填项</div> */}
             <div className={styles.formSubmit}>
-              <button onClick={this.handlerLogin} className={styles.submit} type="button">
+              <button onClick={handleSubmit} className={styles.submit} type="button">
                 登 录
               </button>
             </div>
@@ -70,28 +64,26 @@ class Login extends Component {
     )
   }
 
-  handlerChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value
-    })
-  }
+}
 
-  handlerLogin = async () => {
+
+export default withFormik({
+  // 受控组件绑定值
+  mapPropsToValues: () => ({ username: '', password: '' }),
+  handleSubmit: async (values, Login) => {
+    let { username, password } = values
     let res = await axios.post('/user/login', {
-      "username": this.state.username,
-      "password": this.state.password
+      username,
+      password
     })
     let { status, description } = res
-    console.log(res)
     if (status === 200) {
-      this.props.history.push('/')
+      Login.props.history.push('/')
       window.sessionStorage.setItem('mytoken', res.body.token)
     } else {
       Toast.info(description)
     }
-  }
 
+  },
 
-}
-
-export default Login
+})(Login)
