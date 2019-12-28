@@ -38,7 +38,7 @@ export const myEmitter = new MyEmitter();
 const TOKEN = 'mytoken'
 export const token = {
   getToken:() => {
-    sessionStorage.getItem(TOKEN)
+    return sessionStorage.getItem(TOKEN)
   },
   setToken: (token) => {
     sessionStorage.setItem(TOKEN,token)

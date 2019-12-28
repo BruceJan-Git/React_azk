@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { Flex, WingBlank, WhiteSpace, NavBar, Toast } from 'antd-mobile'
 import { withFormik } from 'formik';
-
+import { token } from '../../utils/api'
 import { Link } from 'react-router-dom'
 import * as yup from 'yup'
 
@@ -82,10 +82,11 @@ export default withFormik({
       username,
       password
     })
-    let { status, description } = res
+    let { status, description, body } = res
     if (status === 200) {
       Login.props.history.push('/')
-      window.sessionStorage.setItem('mytoken', res.body.token)
+      // window.sessionStorage.setItem('mytoken', res.body.token)
+      token.setToken(body.token)
     } else {
       Toast.info(description)
     }

@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-
 import { Link } from 'react-router-dom'
 import { Grid, Button } from 'antd-mobile'
-
 import { API_BASE as BASE_URL } from '../../utils/api'
-
+import { token } from '../../utils/api'
+import axios from 'axios'
 import styles from './index.module.css'
 
 // 菜单数据
@@ -25,6 +24,13 @@ const menus = [
 const DEFAULT_AVATAR = BASE_URL + '/img/profile/avatar.png'
 
 export default class Profile extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      info: {}
+    }
+  }
+
   render() {
     const { history } = this.props
 
@@ -99,5 +105,21 @@ export default class Profile extends Component {
         </div>
       </div>
     )
+  }
+  componentDidMount() {
+    this.loadData()
+  }
+  loadData = async () => {
+    let res = await axios.get('user', {
+      headers: {
+        Authorization: token.getToken()
+      }
+    })
+    if (res.status === 200) {
+      this.setState({
+        info: res.body
+      })
+    }
+    console.log(res)
   }
 }
