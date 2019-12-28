@@ -45,14 +45,14 @@ export default class Profile extends Component {
           />
           <div className={styles.info}>
             <div className={styles.myIcon}>
-              <img className={styles.avatar} src={info ? BASE_URL + info.avatar : DEFAULT_AVATAR} alt="icon" />
+              <img className={styles.avatar} src={info && info.avatar ? BASE_URL + info.avatar : DEFAULT_AVATAR} alt="icon" />
             </div>
             <div className={styles.user}>
               <div className={styles.name}>{info ? info.nickname : '游客'}</div>
               {info ? (
                 <React.Fragment>
                   <div className={styles.auth}>
-                    <span onClick={this.logout}>退出</span>
+                    <span onClick={this.handlerLoginOut}>退出</span>
                   </div>
                   <div className={styles.edit}>
                     编辑个人资料
@@ -125,4 +125,18 @@ export default class Profile extends Component {
     }
     console.log(res)
   }
+  handlerLoginOut = async () => {
+    let res = await axios.post('user/logout', null, {
+      headers: {
+        Authorization: token.getToken()
+      }
+    })
+    if (res.status === 200) {
+      token.removeToken()
+      this.setState({
+        info: null
+      })
+    }
+  }
+
 }
