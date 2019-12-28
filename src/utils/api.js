@@ -34,3 +34,16 @@ const EventEmitter = require('events');
 class MyEmitter extends EventEmitter {}
 
 export const myEmitter = new MyEmitter();
+
+const TOKEN = 'mytoken'
+export const token = {
+  getToken:() => {
+    sessionStorage.getItem(TOKEN)
+  },
+  setToken: (token) => {
+    sessionStorage.setItem(TOKEN,token)
+  },
+  removeToken: () => {
+    sessionStorage.removeItem(TOKEN)
+  }
+}

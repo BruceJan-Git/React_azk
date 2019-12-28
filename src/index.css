@@ -11,10 +11,10 @@ body {
     box-sizing: border-box;
 }
 
-/* #root,
+#root,
 .App {
     height: 100%;
-} */
+}
 
 ul,
 dd {
