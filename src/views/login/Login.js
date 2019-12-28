@@ -4,6 +4,7 @@ import { Flex, WingBlank, WhiteSpace, NavBar, Toast } from 'antd-mobile'
 import { withFormik } from 'formik';
 
 import { Link } from 'react-router-dom'
+import * as yup from 'yup'
 
 import styles from './index.module.css'
 
@@ -42,8 +43,6 @@ class Login extends Component {
               />
               {touched.username && errors.username && <div className={styles.error}>{errors.username}</div>}
             </div>
-            {/* 长度为5到8位，只能出现数字、字母、下划线 */}
-            {/* <div className={styles.error}>账号为必填项</div> */}
             <div className={styles.formItem}>
               <input
                 onBlur={handleBlur}
@@ -56,8 +55,6 @@ class Login extends Component {
               />
             </div>
             {touched.password && errors.password && <div className={styles.error}>{errors.password}</div>}
-            {/* 长度为5到12位，只能出现数字、字母、下划线 */}
-            {/* <div className={styles.error}>账号为必填项</div> */}
             <div className={styles.formSubmit}>
               <button onClick={handleSubmit} className={styles.submit} type="button">
                 登 录
@@ -93,19 +90,9 @@ export default withFormik({
       Toast.info(description)
     }
   },
-  validate: (values) => {
-    const errors = {}
-    if (!values.username) {
-      errors.username = '用户名不能为空'
-    } else if (!REG_UNAME.test(values.username)) {
-      errors.username = '字符为长度为5~8'
-    }
-    if (!values.password) {
-      errors.password = '密码不能为空'
-    } else if (!REG_PWD.test(values.password)) {
-      errors.password = '密码长度为5~12'
-    }
-    return errors
-  }
+  validationSchema: yup.object().shape({
+    username: yup.string().required('用户名不能为空').matches(REG_UNAME, '用户名必须是5-8个字符（字符、数字或者下划线）'),
+    password: yup.string().required('用户名不能为空').matches(REG_PWD, '用户名必须是5-12个字符（字符、数字或者下划线）')
+  })
 
 })(Login)
