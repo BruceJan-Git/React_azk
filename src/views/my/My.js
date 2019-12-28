@@ -27,13 +27,13 @@ export default class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      info: {}
+      info: null
     }
   }
 
   render() {
     const { history } = this.props
-
+    let { info } = this.state
     return (
       <div className={styles.root}>
         {/* 个人信息 */}
@@ -45,34 +45,37 @@ export default class Profile extends Component {
           />
           <div className={styles.info}>
             <div className={styles.myIcon}>
-              <img className={styles.avatar} src={DEFAULT_AVATAR} alt="icon" />
+              <img className={styles.avatar} src={info ? BASE_URL + info.avatar : DEFAULT_AVATAR} alt="icon" />
             </div>
             <div className={styles.user}>
-              <div className={styles.name}>游客</div>
-              {/* 登录后展示： */}
-              {/* <>
-                <div className={styles.auth}>
-                  <span onClick={this.logout}>退出</span>
-                </div>
-                <div className={styles.edit}>
-                  编辑个人资料
+              <div className={styles.name}>{info ? info.nickname : '游客'}</div>
+              {info ? (
+                <React.Fragment>
+                  <div className={styles.auth}>
+                    <span onClick={this.logout}>退出</span>
+                  </div>
+                  <div className={styles.edit}>
+                    编辑个人资料
                   <span className={styles.arrow}>
-                    <i className="iconfont icon-arrow" />
-                  </span>
-                </div>
-              </> */}
+                      <i className="iconfont icon-arrow" />
+                    </span>
+                  </div>
+                </React.Fragment>
+              ) : (
+                  <div className={styles.edit}>
+                    <Button
+                      type="primary"
+                      size="small"
+                      inline
+                      onClick={() => history.push('/login')}>
+                      去登录
+                    </Button>
+                  </div>
+                )
+              }
 
               {/* 未登录展示： */}
-              <div className={styles.edit}>
-                <Button
-                  type="primary"
-                  size="small"
-                  inline
-                  onClick={() => history.push('/login')}
-                >
-                  去登录
-                </Button>
-              </div>
+
             </div>
           </div>
         </div>
