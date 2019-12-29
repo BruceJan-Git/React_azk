@@ -206,4 +206,13 @@ export default class RentAdd extends Component {
       </div>
     )
   }
+  componentDidMount () {
+    let res = this.props.location
+    this.setState({
+      community: {
+        id: res.state.id,
+        name: res.state.name
+      }
+    })
+  }
 }

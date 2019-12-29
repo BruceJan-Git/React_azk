@@ -5,6 +5,7 @@ import { SearchBar } from 'antd-mobile'
 import { currentCity } from '../../../utils/api'
 
 import styles from './index.module.css'
+import axios from 'axios'
 
 export default class Search extends Component {
   // 当前城市id
@@ -21,7 +22,15 @@ export default class Search extends Component {
     const { tipsList } = this.state
 
     return tipsList.map(item => (
-      <li key={item.community} className={styles.tip}>
+      <li
+        onClick={() => {
+          this.props.history.replace('/rent/add', {
+            id: item.community,
+            name: item.communityName
+          })
+        }}
+        key={item.community}
+        className={styles.tip}>
         {item.communityName}
       </li>
     ))
@@ -35,15 +44,40 @@ export default class Search extends Component {
       <div className={styles.root}>
         {/* 搜索框 */}
         <SearchBar
-          placeholder="请输入小区或地址"
+          onClear={this.handlerClear}
+          onChange={this.handlerChange}
+          onSubmit={this.handlerSubmit}
           value={searchTxt}
+          placeholder="请输入小区或地址"
           showCancelButton={true}
-          onCancel={() => history.replace('/rent/add')}
-        />
-
+          onCancel={() => history.replace('/rent/add')} />
         {/* 搜索提示列表 */}
         <ul className={styles.tips}>{this.renderTips()}</ul>
       </div>
     )
   }
+  handlerChange = (value) => {
+    this.setState({
+      searchTxt: value
+    })
+  }
+  handlerSubmit = async () => {
+    let cityId = await currentCity()
+    let { searchTxt } = this.state
+    let res = await axios.get('area/community', {
+      params: {
+        name: searchTxt,
+        id: cityId.value
+      }
+    })
+    this.setState({
+      tipsList: res.body
+    })
+  }
+  handlerClear = () => {
+    this.setState({
+      tipsList: []
+    })
+  }
+
 }
