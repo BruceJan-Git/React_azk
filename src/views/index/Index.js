@@ -155,7 +155,11 @@ class Index extends React.Component {
     }]
     return mentData.map(item => {
       return (
-        <Flex.Item key={item.id}>
+        <Flex.Item key={item.id} onClick={() => {
+          if(item.id === 4) {
+            this.props.history.push('/rent')
+          }
+        }}>
           <img src={item.imgSrc} alt="" />
           <p>{item.mname}</p>
         </Flex.Item>
