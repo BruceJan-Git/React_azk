@@ -262,6 +262,7 @@ export default class HouseDetail extends Component {
 
   componentDidMount() {
     this.getHouseDetail()
+    this.checkFavorite()
   }
 
   // 渲染轮播图结构
@@ -342,8 +343,8 @@ export default class HouseDetail extends Component {
   }
 
   // 点击收藏
-  handleFavorite = () => {
-    let myToken = sessionStorage.getItem('myToken')
+  handleFavorite = async () => {
+    let myToken = sessionStorage.getItem('mytoken')
     if (!myToken) {
       alert('提示', '登录后才能收藏房源，是否去登录?', [
         { text: '取消' },
@@ -354,6 +355,34 @@ export default class HouseDetail extends Component {
           }
         }
       ])
+    }
+    // 判断当前是否为收藏状态
+    let { isFavorite, houseInfo } = this.state
+    console.log(isFavorite)
+    if (isFavorite) {
+      // 登陆状态,则进行取消收藏操作
+      let res = await axios.delete('user/favorites/' + houseInfo.houseCode)
+      this.setState({
+        isFavorite: false
+      })
+    } else {
+      let res = await axios.post('user/favorites/' + houseInfo.houseCode)
+      if (res.status === 200) {
+        this.setState({
+          isFavorite: true
+        })
+      }
+    }
+  }
+
+  checkFavorite = async () => {
+    let { id } = this.props.match.params
+    // 更具id获取当前房源的收藏状态
+    let res = await axios.get('user/favorites/' + id)
+    if (res.status === 200) {
+      this.setState({
+        isFavorite: res.body.isFavorite
+      })
     }
   }
 
