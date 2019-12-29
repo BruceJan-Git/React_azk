@@ -113,11 +113,7 @@ export default class Profile extends Component {
     this.loadData()
   }
   loadData = async () => {
-    let res = await axios.get('user', {
-      headers: {
-        Authorization: token.getToken()
-      }
-    })
+    let res = await axios.get('user')
     if (res.status === 200) {
       this.setState({
         info: res.body
@@ -126,11 +122,7 @@ export default class Profile extends Component {
     console.log(res)
   }
   handlerLoginOut = async () => {
-    let res = await axios.post('user/logout', null, {
-      headers: {
-        Authorization: token.getToken()
-      }
-    })
+    let res = await axios.post('user/logout', null)
     if (res.status === 200) {
       token.removeToken()
       this.setState({

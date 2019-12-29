@@ -47,3 +47,11 @@ export const token = {
     sessionStorage.removeItem(TOKEN)
   }
 }
+// 接口拦截,统一添加接口的请求头
+axios.interceptors.request.use((config) => {
+  let url = config.url
+  if(url.startsWith('user') && !url.startsWith('user/login') && !url.startsWith('user/registered')) {
+    config.headers.Authorization = token.getToken()
+  }
+  return config
+})
