@@ -3,6 +3,7 @@ import './App.css';
 import 'antd-mobile/dist/antd-mobile.css';
 import './assets/fonts/iconfont.css'
 import './assets/font1/iconfont.css'
+import './assets/font/iconfont.css'
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 
 // 导入相关组件(主页和登陆)

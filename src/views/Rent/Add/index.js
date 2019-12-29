@@ -104,7 +104,8 @@ export default class RentAdd extends Component {
       oriented,
       description,
       tempSlides,
-      title
+      title,
+      size
     } = this.state
 
     return (
@@ -112,39 +113,41 @@ export default class RentAdd extends Component {
         <NavBar
           className={styles.navHeader}
           mode="dark"
-          onLeftClick={this.onCancel}
-        >
+          onLeftClick={this.onCancel}>
           发布房源
         </NavBar>
+
         <List
           className={styles.header}
           renderHeader={() => '房源信息'}
-          data-role="rent-list"
-        >
+          data-role="rent-list">
           {/* 选择所在小区 */}
           <Item
             extra={community.name || '请输入小区名称'}
             arrow="horizontal"
-            onClick={() => history.replace('/rent/search')}
-          >
+            onClick={() => history.replace('/rent/search')}>
             小区名称
           </Item>
-          <InputItem placeholder="请输入租金/月" extra="￥/月" value={price}>
+
+          <InputItem placeholder="请输入租金/月" extra="￥/月" value={price} onChange={(price) => { this.comValue('price', price) }}>
             租&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;金
           </InputItem>
-          <InputItem placeholder="请输入建筑面积" extra="㎡">
+
+          <InputItem placeholder="请输入建筑面积" extra="㎡" value={size} onChange={(size) => { this.comValue('size', size) }}>
             建筑面积
           </InputItem>
-          <Picker data={roomTypeData} value={[roomType]} cols={1}>
+
+          <Picker data={roomTypeData} value={[roomType]} cols={1} onChange={(value) => { this.comValue('roomType', value[0]) }}>
             <Item arrow="horizontal">
               户&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;型
             </Item>
           </Picker>
 
-          <Picker data={floorData} value={[floor]} cols={1}>
+          <Picker data={floorData} value={[floor]} cols={1} onChange={(value) => { this.comValue('floor', value[0]) }}>
             <Item arrow="horizontal">所在楼层</Item>
           </Picker>
-          <Picker data={orientedData} value={[oriented]} cols={1}>
+
+          <Picker data={orientedData} value={[oriented]} cols={1} onChange={(value) => { this.comValue('oriented', value[0]) }}>
             <Item arrow="horizontal">
               朝&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;向
             </Item>
@@ -154,19 +157,17 @@ export default class RentAdd extends Component {
         <List
           className={styles.title}
           renderHeader={() => '房屋标题'}
-          data-role="rent-list"
-        >
+          data-role="rent-list">
           <InputItem
+            onChange={(value) => { this.comValue('title', value) }}
             placeholder="请输入标题（例如：整租 小区名 2室 5000元）"
-            value={title}
-          />
+            value={title} />
         </List>
 
         <List
           className={styles.pics}
           renderHeader={() => '房屋图像'}
-          data-role="rent-list"
-        >
+          data-role="rent-list">
           <ImagePicker
             files={tempSlides}
             multiple={true}
@@ -177,22 +178,20 @@ export default class RentAdd extends Component {
         <List
           className={styles.supporting}
           renderHeader={() => '房屋配置'}
-          data-role="rent-list"
-        >
+          data-role="rent-list">
           <HousePackge select />
         </List>
 
         <List
           className={styles.desc}
           renderHeader={() => '房屋描述'}
-          data-role="rent-list"
-        >
+          data-role="rent-list" >
           <TextareaItem
+            onChange={(value) => { this.comValue('description', value) }}
             rows={5}
             placeholder="请输入房屋描述信息"
             autoHeight
-            value={description}
-          />
+            value={description}/>
         </List>
 
         <Flex className={styles.bottom}>
@@ -206,13 +205,21 @@ export default class RentAdd extends Component {
       </div>
     )
   }
-  componentDidMount () {
-    let res = this.props.location
+  componentDidMount() {
+    let param = this.props.location.state
+    if (param) {
+      this.setState({
+        community: {
+          id: param.id,
+          name: param.name
+        }
+      })
+    }
+  }
+  comValue = (name, value) => {
     this.setState({
-      community: {
-        id: res.state.id,
-        name: res.state.name
-      }
+      [name]: value
     })
   }
+
 }
