@@ -157,7 +157,7 @@ class Index extends React.Component {
       return (
         <Flex.Item key={item.id} onClick={() => {
           if(item.id === 4) {
-            this.props.history.push('/rent')
+            this.props.history.push('/rent/add')
           }
         }}>
           <img src={item.imgSrc} alt="" />

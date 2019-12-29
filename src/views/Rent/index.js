@@ -19,10 +19,9 @@ export default class Rent extends Component {
 
   // 获取已发布房源的列表数据
   async getHouseList() {
-    const res = await axios.get('/user/houses')
-    // console.log(res.data.body)
-
-    const { status, body } = res.data
+    const res = await axios.get('user/houses')
+    console.log(res)
+    const { status, body } = res
     if (status === 200) {
       this.setState({
         list: body
@@ -34,7 +33,7 @@ export default class Rent extends Component {
   }
 
   componentDidMount() {
-    // this.getHouseList()
+    this.getHouseList()
   }
 
   renderHouseItem() {
@@ -81,13 +80,15 @@ export default class Rent extends Component {
 
   render() {
     const { history } = this.props
-    console.log(this.props)
     return (
       <div className={styles.root}>
         <NavBar
           className={styles.navHeader}
           mode="dark"
           icon={<Icon type="left" />}
+          rightContent={<Icon type="check-circle-o" size='sm' onClick={() => {
+            history.push('rent/add')
+          }}/>}
           onLeftClick={() => history.go(-1)}
         >
           房屋管理
