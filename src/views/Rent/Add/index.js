@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 
 import {
   Flex,
@@ -8,7 +9,8 @@ import {
   ImagePicker,
   TextareaItem,
   Modal,
-  NavBar
+  NavBar,
+  Toast
 } from 'antd-mobile'
 
 // import HousePackge from '../../../components/HousePackage'
@@ -169,6 +171,7 @@ export default class RentAdd extends Component {
           renderHeader={() => '房屋图像'}
           data-role="rent-list">
           <ImagePicker
+            onChange={this.handlerImage}
             files={tempSlides}
             multiple={true}
             className={styles.imgpicker}
@@ -191,7 +194,7 @@ export default class RentAdd extends Component {
             rows={5}
             placeholder="请输入房屋描述信息"
             autoHeight
-            value={description}/>
+            value={description} />
         </List>
 
         <Flex className={styles.bottom}>
@@ -220,6 +223,30 @@ export default class RentAdd extends Component {
     this.setState({
       [name]: value
     })
+  }
+  handlerImage = (files, type, index) => {
+    this.setState({
+      tempSlides: files
+    })
+  }
+  addHouse = async () => {
+    let { tempSlides } = this.state
+    if (tempSlides.length === 0) {
+      Toast('请选择图片')
+      return
+    } else {
+      let form = new FormData()
+      tempSlides.forEach(item => {
+        form.append('file', item.file)
+      })
+      let res = await axios.post('houses/image', form, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      let houseImg = res.body.join('|')
+      console.log(houseImg)
+    }
   }
 
 }
