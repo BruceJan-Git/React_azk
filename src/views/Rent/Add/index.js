@@ -235,7 +235,7 @@ export default class RentAdd extends Component {
     })
   }
   addHouse = async () => {
-    let { tempSlides } = this.state
+    let { tempSlides, title, description, oriented, supporting, price, roomType, size, floor, community } = this.state
     if (tempSlides.length === 0) {
       Toast('请选择图片')
       return
@@ -250,7 +250,22 @@ export default class RentAdd extends Component {
         }
       })
       let houseImg = res.body.join('|')
-      console.log(houseImg)
+      let resoult = await axios.post('user/houses', {
+        title,
+        description,
+        houseImg,
+        oriented,
+        supporting: supporting.join('|'),
+        price,
+        roomType,
+        size,
+        floor,
+        community: community.id
+      })
+      console.log(resoult)
+      if (resoult.status === 200) {
+        this.props.history.push('/rent')
+      }
     }
   }
   handlerTagSelect = (selectedItems) => {
