@@ -16,6 +16,7 @@ import Rent from './views/Rent/index'
 import RentAdd from './views/Rent/Add/index'
 import RentSearch from './views/Rent/Search/index'
 import AuthRoute from './components/AuthRoute/AuthRoute'
+import Map from './views/map/idnex'
 import '../src/utils/api' // 基准路径/响应拦截
 
 
@@ -34,6 +35,7 @@ function App() {
         <Route path='/home' component={Home}></Route>
         <Route path='/city' component={City}></Route>
         <Route path='/detail/:id' component={Detail}></Route>
+        <Route path='/map' component={Map}></Route>
         <AuthRoute path='/test' component={Test}></AuthRoute>
         <AuthRoute path='/rent' exact component={Rent}></AuthRoute>
         <AuthRoute path='/rent/add' component={RentAdd}></AuthRoute>
