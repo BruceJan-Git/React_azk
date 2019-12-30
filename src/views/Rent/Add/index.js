@@ -110,6 +110,8 @@ export default class RentAdd extends Component {
       size
     } = this.state
 
+    const tagSelect = ['衣柜', '洗衣机', '空调', '天然气', '冰箱', '暖气', '电视', '热水器', '宽带', '沙发']
+
     return (
       <div className={styles.root}>
         <NavBar
@@ -182,7 +184,10 @@ export default class RentAdd extends Component {
           className={styles.supporting}
           renderHeader={() => '房屋配置'}
           data-role="rent-list">
-          <HousePackge select />
+          <HousePackge
+            list={tagSelect}
+            onSelect={this.handlerTagSelect}
+            select />
         </List>
 
         <List
@@ -247,6 +252,11 @@ export default class RentAdd extends Component {
       let houseImg = res.body.join('|')
       console.log(houseImg)
     }
+  }
+  handlerTagSelect = (selectedItems) => {
+    this.setState({
+      supporting: selectedItems
+    })
   }
 
 }
