@@ -9,3 +9,24 @@
     bottom: 0;
   }
 }
+
+.point {
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  border-radius: 40px;
+  background-color: green;
+  text-align: center;
+  font-size: 16px;
+  color: #fff;
+  padding-top: 20px;
+  div {
+    height: 20px;
+    line-height: 20px;
+  }
+  p {
+    height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+  }
+}

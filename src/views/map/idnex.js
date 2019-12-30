@@ -20,8 +20,27 @@ class Map extends React.Component {
   }
   initMap = () => {
     var map = new window.BMap.Map("myMap");
-    map.centerAndZoom(new window.BMap.Point(116.404, 39.915), 11);
-    map.setCurrentCity("北京")
+    var myCity = new window.BMap.LocalCity();
+    myCity.get((res) => {
+      let { lng, lat } = res.center
+      let point = new window.BMap.Point(lng, lat)
+      map.centerAndZoom(point, 11);
+      var opts = {
+        position: point,    // 指定文本标注所在的地理位置
+        offset: new window.BMap.Size(30, -30)    //设置文本偏移量
+      }
+      let content = `
+        <div class=${styles.point}>
+          <div>海淀区</div>
+          <p>100套</p>
+        </div>
+      `
+      var label = new window.BMap.Label(content, opts);  // 创建文本标注对象
+      label.setStyle({
+        border:'0px'
+      });
+      map.addOverlay(label);
+    })
   }
 }
 
