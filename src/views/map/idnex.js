@@ -1,7 +1,16 @@
 import React from 'react';
 import styles from './index.module.scss';
 import { NavBar, Icon } from 'antd-mobile'
+import axios from 'axios';
+import { currentCity } from '../../utils/api'
 class Map extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mapData: []
+    }
+  }
+
   render() {
     return (
       <div className={styles.map}>
@@ -17,6 +26,7 @@ class Map extends React.Component {
   }
   componentDidMount() {
     this.initMap()
+    this.loadMapData()
   }
   initMap = () => {
     var map = new window.BMap.Map("myMap");
@@ -37,9 +47,20 @@ class Map extends React.Component {
       `
       var label = new window.BMap.Label(content, opts);  // 创建文本标注对象
       label.setStyle({
-        border:'0px'
+        border: '0px'
       });
       map.addOverlay(label);
+    })
+  }
+  loadMapData = async () => {
+    let city = await currentCity()
+    let res = await axios.get('area/map', {
+      params: {
+        id: city.value
+      }
+    })
+    this.setState({
+      mapData: res.body
     })
   }
 }
