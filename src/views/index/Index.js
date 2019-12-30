@@ -36,7 +36,7 @@ class Index extends React.Component {
             this.props.history.push('/city')
           }}
           rightContent={[
-            <Icon key="0" type="search" style={{ marginRight: '16px' }} />,
+            <Icon key="0" type="search" style={{ marginRight: '16px' }} onClick={() => { this.props.history.push('/map') }} />,
           ]}>
           首页
         </NavBar>
@@ -156,7 +156,7 @@ class Index extends React.Component {
     return mentData.map(item => {
       return (
         <Flex.Item key={item.id} onClick={() => {
-          if(item.id === 4) {
+          if (item.id === 4) {
             this.props.history.push('/rent/add')
           }
         }}>
