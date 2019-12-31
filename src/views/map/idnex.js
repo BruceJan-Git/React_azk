@@ -155,6 +155,13 @@ class Map extends React.Component {
     let x = window.innerWidth / 2 - clientX
     let y = (window.innerHeight - 330) / 2 - clientY
     map.panBy(x, y)
+    let mvEvent = () => {
+      this.setState({
+        loaded: false
+      })
+      map.removeEventListener('movestart', mvEvent)
+    }
+    map.addEventListener('movestart', mvEvent)
   }
   // 渲染小区房源列表
   renderHouseList = () => {
