@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './index.module.scss';
 import { NavBar, Icon } from 'antd-mobile'
 import axios from 'axios';
-import { currentCity } from '../../utils/api'
+import { currentCity, API_BASE } from '../../utils/api'
 class Map extends React.Component {
   constructor(props) {
     super(props);
@@ -28,7 +28,10 @@ class Map extends React.Component {
             <h1 className={styles.listTitle}>房屋列表</h1>
             <a className={styles.titleMore} href="/house/list">更多房源</a>
           </div>
-          <div className={styles.houseItems}></div>
+          <div className={styles.houseItems}>
+            {/* 房源列表 */}
+            {this.renderHouseList()}
+          </div>
         </div>
       </div>
     )
@@ -148,6 +151,36 @@ class Map extends React.Component {
       houseList: res.body.list,
       loaded: true
     })
+  }
+  // 渲染小区房源列表
+  renderHouseList = () => {
+    let { houseList } = this.state
+    return (
+      houseList.map(item => {
+        return (
+          <div
+            onClick={() => {
+              this.props.history.push('detail/' + item.houseCode)
+            }}
+            className={styles.house}
+            key={item.houseCode} >
+            <div className={styles.imgWrap}>
+              <img className={styles.img} src={API_BASE + item.houseImg} alt="" />
+            </div>
+            <div className={styles.content}>
+              <h3 className={styles.title}>{item.title}</h3>
+              <div className={styles.desc}>{item.desc}</div>
+              <div>
+                <span className={[styles.tag].join(' ')}> 近地铁</span>
+              </div>
+              <div className={styles.price}>
+                <span className={styles.priceNum}>{item.price}</span> 元/月
+              </div>
+            </div>
+          </div>
+        )
+      })
+    )
   }
 }
 
