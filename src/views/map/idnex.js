@@ -4,15 +4,32 @@ import { NavBar, Icon } from 'antd-mobile'
 import axios from 'axios';
 import { currentCity } from '../../utils/api'
 class Map extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      houseList: [],
+      loaded: false
+    }
+  }
 
   render() {
     return (
-      <div className={styles.mapContainer}>
+      <div className={styles.map}>
+        {/* 顶部导航栏 */}
         <NavBar
           mode='light'
           onLeftClick={() => { this.props.history.go(-1) }}
           icon={<Icon type="left" />}>地图找房</NavBar>
-        <div id='myMap' className={styles.map}></div>
+        {/* 地图显示区 */}
+        <div id='myMap' className={styles.map_content}></div>
+        {/* 小区房源列表展示 */}
+        <div className={[styles.houseList, this.state.loaded ? styles.show : ''].join(' ')}>
+          <div className={styles.titleWrap}>
+            <h1 className={styles.listTitle}>房屋列表</h1>
+            <a className={styles.titleMore} href="/house/list">更多房源</a>
+          </div>
+          <div className={styles.houseItems}></div>
+        </div>
       </div>
     )
   }
@@ -59,7 +76,7 @@ class Map extends React.Component {
       offset: new window.BMap.Size(30, -30)    //设置文本偏移量
     }
     let content = `
-      <div class=${styles.labelContent}>
+      <div class=${styles.point}>
         <div>${dotInfo.label}</div>
         <p>${dotInfo.count}套</p>
       </div> `
@@ -121,12 +138,17 @@ class Map extends React.Component {
     }, 0);
   }
   // 获取小区房源信息
-  getAreaHouseInfo = (id) => {
-    console.log(id)
+  getAreaHouseInfo = async (id) => {
+    let res = await axios.get('houses', {
+      params: {
+        cityId: id
+      }
+    })
+    this.setState({
+      houseList: res.body.list,
+      loaded: true
+    })
   }
-  /**
-   * 备注:点击绘制物,console即将绘制覆盖物的层级
-   */
 }
 
 export default Map
