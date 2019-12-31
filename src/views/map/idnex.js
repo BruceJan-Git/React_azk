@@ -28,6 +28,9 @@ class Map extends React.Component {
     let mapData = await this.loadMapData()
     this.initMap(mapData)
   }
+  /**
+   * 获取地图数据
+   */
   initMap = (mapData) => {
     var map = new window.BMap.Map("myMap");
     map.centerAndZoom(new window.BMap.Point(116.404, 39.915), 11)
@@ -36,10 +39,10 @@ class Map extends React.Component {
       let dot = this.drawSingleDot(item)
       map.addOverlay(dot)
     })
+
     // var myCity = new window.BMap.LocalCity();
-    // console.log(myCity)
     // myCity.get((res) => {
-    //   console.log(res)
+    //   console.log(res) // 定位失败,定位不到北京 若成功,则会获取当城市为北京
     //   let { lng, lat } = res.center
     //   let point = new window.BMap.Point(lng, lat)
     //   map.setCurrentCity("北京")
@@ -48,23 +51,12 @@ class Map extends React.Component {
     //     let dot = this.drawSingleDot(item)
     //     map.addOverlay(dot)
     //   })
-    //   // var opts = {
-    //   //   position: point,    // 指定文本标注所在的地理位置
-    //   //   offset: new window.BMap.Size(30, -30)    //设置文本偏移量
-    //   // }
-    //   // let content = `
-    //   //   <div class=${styles.point}>
-    //   //     <div>海淀区</div>
-    //   //     <p>100套</p>
-    //   //   </div>
-    //   // `
-    //   // var label = new window.BMap.Label(content, opts);  // 创建文本标注对象
-    //   // label.setStyle({
-    //   //   border: '0px'
-    //   // });
-    //   // map.addOverlay(label);
     // })
   }
+
+  /**
+   * 获取地图覆盖物数据
+   */
   loadMapData = async () => {
     let city = await currentCity()
     let res = await axios.get('area/map', {
@@ -75,10 +67,14 @@ class Map extends React.Component {
     console.log(res.body)
     return res.body
   }
+
+  /**
+   * 获取单个覆盖物
+   */
   drawSingleDot = (dotInfo) => {
-    let { latitude, longitude } = dotInfo.coord
-    // console.log(latitude, longitude)
-    let point = new window.BMap.Point(latitude, longitude)
+    let { longitude, latitude } = dotInfo.coord
+    // let point = new window.BMap.Point(latitude, longitude) // 经纬度不可以写反,否则覆盖物找不到
+    let point = new window.BMap.Point(longitude, latitude)
     var opts = {
       position: point,    // 指定文本标注所在的地理位置
       offset: new window.BMap.Size(30, -30)    //设置文本偏移量
