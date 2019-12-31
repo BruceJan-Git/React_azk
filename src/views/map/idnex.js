@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './index.module.scss';
-import { NavBar, Icon } from 'antd-mobile'
+import { NavBar, Icon, Toast } from 'antd-mobile'
 import axios from 'axios';
 import { currentCity, API_BASE } from '../../utils/api'
 class Map extends React.Component {
@@ -37,6 +37,7 @@ class Map extends React.Component {
     )
   }
   async componentDidMount() {
+    Toast.loading('加载中...', 0)
     let mapData = await this.loadMapData()
     this.initMap(mapData)
   }
@@ -83,12 +84,26 @@ class Map extends React.Component {
         <div>${dotInfo.label}</div>
         <p>${dotInfo.count}套</p>
       </div> `
+    if (type === 'second') {
+      content = `
+      <div class='${styles.point} ${styles.secondContainer}'>
+        <div>${dotInfo.label}</div>
+        <p>${dotInfo.count}套</p>
+      </div> `
+    } else if (type === 'third') {
+      content = `
+      <div class=${styles.thirdContainer}>
+        ${dotInfo.label} ${dotInfo.count}套
+      </div> `
+    }
     var label = new window.BMap.Label(content, opts);  // 创建文本标注对象
     label.addEventListener('click', (e) => {
       let id = dotInfo.value
       if (type === 'first') {
+        Toast.loading('正在加载区域房源...', 0)
         this.drawSecondtOverLay(id, map, point)
       } else if (type === 'second') {
+        Toast.loading('正在加载小区房源...', 0)
         this.drawThirdOverLay(id, map, point)
       } else if (type === 'third') {
         this.getAreaHouseInfo(id, map, e)
@@ -99,6 +114,7 @@ class Map extends React.Component {
       width: '0px',
       border: '0'
     });
+    Toast.hide()
     return label
   }
   // 绘制一级覆盖物
@@ -106,6 +122,7 @@ class Map extends React.Component {
     mapData.forEach(item => {
       let dot = this.drawSingleDot(item, map, 'first')
       map.addOverlay(dot)
+
     })
   }
   // 绘制二级覆盖物
@@ -137,7 +154,7 @@ class Map extends React.Component {
       map.addOverlay(dot)
     })
     setTimeout(() => {
-      map.centerAndZoom(point, 13)
+      map.centerAndZoom(point, 15)
     }, 0);
   }
   // 获取小区房源信息
