@@ -166,6 +166,7 @@ class Map extends React.Component {
   // 渲染小区房源列表
   renderHouseList = () => {
     let { houseList } = this.state
+    console.log(houseList)
     return (
       houseList.map(item => {
         return (
@@ -181,9 +182,16 @@ class Map extends React.Component {
             <div className={styles.content}>
               <h3 className={styles.title}>{item.title}</h3>
               <div className={styles.desc}>{item.desc}</div>
-              <div>
-                <span className={[styles.tag].join(' ')}> 近地铁</span>
-              </div>
+              {item.tags.map((item, index) => {
+                let i = (index + 1) % 3 === 0 ? 3 : (index + 1) % 3
+                let tagClass = 'tag' + i
+                tagClass = styles[tagClass]
+                return (
+                  <div key={index} className={styles.tag}>
+                    <span className={tagClass}>{item}</span>
+                  </div>
+                )
+              })}
               <div className={styles.price}>
                 <span className={styles.priceNum}>{item.price}</span> 元/月
               </div>
