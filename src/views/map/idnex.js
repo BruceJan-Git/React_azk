@@ -4,12 +4,6 @@ import { NavBar, Icon } from 'antd-mobile'
 import axios from 'axios';
 import { currentCity } from '../../utils/api'
 class Map extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      mapData: []
-    }
-  }
 
   render() {
     return (
@@ -18,9 +12,7 @@ class Map extends React.Component {
           mode='light'
           onLeftClick={() => { this.props.history.go(-1) }}
           icon={<Icon type="left" />}>地图找房</NavBar>
-        <div id='myMap' className={styles.map}>
-
-        </div>
+        <div id='myMap' className={styles.map}></div>
       </div>
     )
   }
@@ -28,18 +20,12 @@ class Map extends React.Component {
     let mapData = await this.loadMapData()
     this.initMap(mapData)
   }
-  /**
-   * 获取地图数据
-   */
+  // 获取地图数据
   initMap = (mapData) => {
     var map = new window.BMap.Map("myMap");
     map.centerAndZoom(new window.BMap.Point(116.404, 39.915), 11)
     map.setCurrentCity("北京");
-    mapData.forEach(item => {
-      let dot = this.drawSingleDot(item, map)
-      map.addOverlay(dot)
-    })
-
+    this.drawFirstOverLay(mapData, map, 'first')
     // var myCity = new window.BMap.LocalCity();
     // myCity.get((res) => {
     //   console.log(res) // 定位失败,定位不到北京 若成功,则会获取当城市为北京
@@ -53,10 +39,7 @@ class Map extends React.Component {
     //   })
     // })
   }
-
-  /**
-   * 获取地图覆盖物数据
-   */
+  // 获取地图覆盖物数据
   loadMapData = async () => {
     let city = await currentCity()
     let res = await axios.get('area/map', {
@@ -64,14 +47,10 @@ class Map extends React.Component {
         id: city.value
       }
     })
-    console.log(res.body)
     return res.body
   }
-
-  /**
-   * 获取单个覆盖物
-   */
-  drawSingleDot = (dotInfo, map) => {
+  // 获取单个覆盖物
+  drawSingleDot = (dotInfo, map, type) => {
     let { longitude, latitude } = dotInfo.coord
     // let point = new window.BMap.Point(latitude, longitude) // 经纬度不可以写反,否则覆盖物找不到
     let point = new window.BMap.Point(longitude, latitude)
@@ -83,27 +62,15 @@ class Map extends React.Component {
       <div class=${styles.labelContent}>
         <div>${dotInfo.label}</div>
         <p>${dotInfo.count}套</p>
-      </div>
-    `
+      </div> `
     var label = new window.BMap.Label(content, opts);  // 创建文本标注对象
     label.addEventListener('click', () => {
       let id = dotInfo.value
-      axios.get('area/map', {
-        params: {
-          id
-        }
-      })
-        .then((res) => {
-          console.log(res)
-          setTimeout(() => {
-            map.centerAndZoom(point, 13)
-          }, 0);
-          map.clearOverlays()
-          res.body.forEach(item => {
-            let dot = this.drawSingleDot(item, map)
-            map.addOverlay(dot)
-          })
-        })
+      if (type === 'first') {
+        this.drawSecondtOverLay(id, map, point, 'second')
+      } else if (type === 'second') {
+        this.drawThirdOverLay(id, map, point, 'third')
+      }
     })
     label.setStyle({
       height: "0px",
@@ -112,6 +79,38 @@ class Map extends React.Component {
     });
     return label
   }
+  // 绘制一级覆盖物
+  drawFirstOverLay = (mapData, map, type) => {
+    console.log(type)
+    mapData.forEach(item => {
+      let dot = this.drawSingleDot(item, map, 'first')
+      map.addOverlay(dot)
+    })
+  }
+  // 绘制二级覆盖物
+  drawSecondtOverLay = async (id, map, point, type) => {
+    console.log(type)
+    let res = await axios.get('area/map', {
+      params: {
+        id
+      }
+    })
+    map.clearOverlays()
+    res.body.forEach(item => {
+      let dot = this.drawSingleDot(item, map, 'second')
+      map.addOverlay(dot)
+    })
+    setTimeout(() => {
+      map.centerAndZoom(point, 13)
+    }, 0)
+  }
+  // 绘制三级覆盖物
+  drawThirdOverLay = (id, map, point, type) => {
+    console.log(id, type)
+  }
+  /**
+   * 备注:点击绘制物,console即将绘制覆盖物的层级
+   */
 }
 
 export default Map
