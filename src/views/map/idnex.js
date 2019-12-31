@@ -25,7 +25,7 @@ class Map extends React.Component {
     var map = new window.BMap.Map("myMap");
     map.centerAndZoom(new window.BMap.Point(116.404, 39.915), 11)
     map.setCurrentCity("北京");
-    this.drawFirstOverLay(mapData, map, 'first')
+    this.drawFirstOverLay(mapData, map)
     // var myCity = new window.BMap.LocalCity();
     // myCity.get((res) => {
     //   console.log(res) // 定位失败,定位不到北京 若成功,则会获取当城市为北京
@@ -67,9 +67,11 @@ class Map extends React.Component {
     label.addEventListener('click', () => {
       let id = dotInfo.value
       if (type === 'first') {
-        this.drawSecondtOverLay(id, map, point, 'second')
+        this.drawSecondtOverLay(id, map, point)
       } else if (type === 'second') {
-        this.drawThirdOverLay(id, map, point, 'third')
+        this.drawThirdOverLay(id, map, point)
+      } else if (type === 'third') {
+        this.getAreaHouseInfo(id)
       }
     })
     label.setStyle({
@@ -80,16 +82,14 @@ class Map extends React.Component {
     return label
   }
   // 绘制一级覆盖物
-  drawFirstOverLay = (mapData, map, type) => {
-    console.log(type)
+  drawFirstOverLay = (mapData, map) => {
     mapData.forEach(item => {
       let dot = this.drawSingleDot(item, map, 'first')
       map.addOverlay(dot)
     })
   }
   // 绘制二级覆盖物
-  drawSecondtOverLay = async (id, map, point, type) => {
-    console.log(type)
+  drawSecondtOverLay = async (id, map, point) => {
     let res = await axios.get('area/map', {
       params: {
         id
@@ -105,8 +105,24 @@ class Map extends React.Component {
     }, 0)
   }
   // 绘制三级覆盖物
-  drawThirdOverLay = (id, map, point, type) => {
-    console.log(id, type)
+  drawThirdOverLay = async (id, map, point) => {
+    let res = await axios.get('area/map', {
+      params: {
+        id
+      }
+    })
+    map.clearOverlays()
+    res.body.forEach(item => {
+      let dot = this.drawSingleDot(item, map, 'third')
+      map.addOverlay(dot)
+    })
+    setTimeout(() => {
+      map.centerAndZoom(point, 13)
+    }, 0);
+  }
+  // 获取小区房源信息
+  getAreaHouseInfo = (id) => {
+    console.log(id)
   }
   /**
    * 备注:点击绘制物,console即将绘制覆盖物的层级
