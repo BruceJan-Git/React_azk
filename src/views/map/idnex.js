@@ -84,14 +84,14 @@ class Map extends React.Component {
         <p>${dotInfo.count}套</p>
       </div> `
     var label = new window.BMap.Label(content, opts);  // 创建文本标注对象
-    label.addEventListener('click', () => {
+    label.addEventListener('click', (e) => {
       let id = dotInfo.value
       if (type === 'first') {
         this.drawSecondtOverLay(id, map, point)
       } else if (type === 'second') {
         this.drawThirdOverLay(id, map, point)
       } else if (type === 'third') {
-        this.getAreaHouseInfo(id)
+        this.getAreaHouseInfo(id, map, e)
       }
     })
     label.setStyle({
@@ -141,7 +141,7 @@ class Map extends React.Component {
     }, 0);
   }
   // 获取小区房源信息
-  getAreaHouseInfo = async (id) => {
+  getAreaHouseInfo = async (id, map, e) => {
     let res = await axios.get('houses', {
       params: {
         cityId: id
@@ -151,6 +151,10 @@ class Map extends React.Component {
       houseList: res.body.list,
       loaded: true
     })
+    const { clientX, clientY } = e.changedTouches[0]
+    let x = window.innerWidth / 2 - clientX
+    let y = (window.innerHeight - 330) / 2 - clientY
+    map.panBy(x, y)
   }
   // 渲染小区房源列表
   renderHouseList = () => {
