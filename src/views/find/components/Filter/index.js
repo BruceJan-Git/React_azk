@@ -8,6 +8,7 @@ import FilterMore from '../FilterMore'
 // css模块化导入方式 不再是import ''
 import styles from './index.module.css'
 import { currentCity } from '../../../../utils/api'
+import { Spring } from 'react-spring/renderprops'
 
 export default class Filter extends Component {
   constructor(props) {
@@ -64,10 +65,11 @@ export default class Filter extends Component {
     return (
       <div className={styles.root}>
         {/* 前三个菜单的遮罩层 */}
-        {(openType === 'mode' || openType === 'area' || openType === 'price') &&
+        {/* {(openType === 'mode' || openType === 'area' || openType === 'price') &&
           <div
             onClick={() => { this.handlerCancle(openType) }}
-            className={styles.mask} />}
+            className={styles.mask} />} */}
+        {this.renderMask(openType)}
         <div className={styles.content}>
 
           {/* 标题栏 */}
@@ -213,6 +215,28 @@ export default class Filter extends Component {
     filters.more = more[0]
 
     return filters
+  }
+  // 给弹窗遮罩层添加动画效果
+  renderMask = (openType) => {
+    let flag = (openType === 'mode' || openType === 'area' || openType === 'price') ? false : true
+    return (
+      <Spring
+        from={{ opacity: 0 }}
+        to={{ opacity: flag ? 0 : 1 }}>
+        {(props) => {
+          if (props.opacity === 0) {
+            return null
+          } else {
+            return (
+              <div
+                style={props}
+                onClick={() => { this.handlerCancle(openType) }}
+                className={styles.mask} />
+            )
+          }
+        }}
+      </Spring>
+    )
   }
 
 }
