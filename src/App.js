@@ -11,7 +11,6 @@ import Login from './views/login/Login'
 import Home from './views/home/Home'
 import City from './views/city/City'
 import Detail from './views/detail/index'
-import Test from './views/test/test'
 import Rent from './views/Rent/index'
 import RentAdd from './views/Rent/Add/index'
 import RentSearch from './views/Rent/Search/index'
@@ -30,13 +29,11 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        {/* <Route path='/test' component={Test}></Route> */}
         <Route path='/login' component={Login}></Route>
         <Route path='/home' component={Home}></Route>
         <Route path='/city' component={City}></Route>
         <Route path='/detail/:id' component={Detail}></Route>
         <Route path='/map' component={Map}></Route>
-        <AuthRoute path='/test' component={Test}></AuthRoute>
         <AuthRoute path='/rent' exact component={Rent}></AuthRoute>
         <AuthRoute path='/rent/add' component={RentAdd}></AuthRoute>
         <AuthRoute path='/rent/search' component={RentSearch}></AuthRoute>

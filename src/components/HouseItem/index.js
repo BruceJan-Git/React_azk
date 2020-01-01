@@ -1,7 +1,4 @@
 import React from 'react'
-
-import PropTypes from 'prop-types'
-
 import { API_BASE } from '../../utils/api'
 // props
 // 1. cheldren -> 获取组件动态内容  <Child>adadsd</Child>
@@ -21,7 +18,7 @@ function HouseItem({ houseImg, title, desc, tags, price, onClick, style }) {
         <div className={styles.desc}>{desc}</div>
         <div>
           {/* ['近地铁', '随时看房'] */}
-          {tags&&tags.map((tag, index) => {
+          {tags && tags.map((tag, index) => {
             const tagClass = 'tag' + (index + 1)
             return (
               <span

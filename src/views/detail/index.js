@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Carousel, Flex, Modal, Toast, NavBar, Icon } from 'antd-mobile'
+import { Carousel, Flex, Modal, NavBar, Icon } from 'antd-mobile'
 import axios from 'axios'
 // import HouseItem from '../HouseItem'
 import styles from './index.module.css'
@@ -361,7 +361,7 @@ export default class HouseDetail extends Component {
     console.log(isFavorite)
     if (isFavorite) {
       // 登陆状态,则进行取消收藏操作
-      let res = await axios.delete('user/favorites/' + houseInfo.houseCode)
+      await axios.delete('user/favorites/' + houseInfo.houseCode)
       this.setState({
         isFavorite: false
       })
